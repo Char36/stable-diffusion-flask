@@ -9,6 +9,7 @@ app/data/inpainting_examples
 app/src/
 app/logs/
 app/latent_diffusion.*
+app/optimizedSD/logs/
 
 __pycache__/
 
