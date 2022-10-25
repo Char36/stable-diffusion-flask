@@ -24,7 +24,25 @@ python main.py
 
 You should see some run output like:
 
+```console
+Connected to pydev debugger (build 222.4167.23)
+ * Serving Flask app 'main' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+```
+
 ## Example requests:
+
+### Common parameters
+for reproducibility, you can set an image `seed`, e.g:
+
+`"seed": 892494128`
+
+If no seed is sent, the app will generate a pseudorandom one
+
 
 ### Stream single image
 
