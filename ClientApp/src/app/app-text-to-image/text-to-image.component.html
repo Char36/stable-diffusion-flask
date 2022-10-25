@@ -1,0 +1,23 @@
+﻿<div>
+  <div class="controls">
+    <mat-card>
+      <mat-card-title>Text To Image Generator</mat-card-title>
+      <mat-card-content>
+          <textarea #promptTextBox
+                    matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1"
+                    cdkAutosizeMaxRows="5"
+          ></textarea>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content>
+        <div *ngIf="imageSource">
+          <img class="images" src="{{ imageSource }}" alt="image"/>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
