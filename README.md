@@ -27,6 +27,9 @@ You should see some run output like:
 ## Example requests:
 
 ### Stream single image
+
+The below request streams a single 1280x960 image result
+
 ``` http request
 POST /imagine HTTP/1.1
 Host: 127.0.0.1:5000
@@ -38,8 +41,7 @@ Content-Length: 262
    "prompt": "lord of the rings battle scene, highly detailed realistic middle earth, ents orcs knights fighting in battle siege game of thrones rob stark, HDR lighting, birds-eye view",
    "H": 960,
    "W": 1280,
-   "ddim_steps": 50,
-   "n_samples": 1
+   "ddim_steps": 50
 }
 ```
 
@@ -48,7 +50,7 @@ Content-Length: 262
 Returns _n_ images as a JSON array of B64-encoded byte arrays, 
 where _n_ :== _n_samples_ * _n_iter_.
 
-The below example generates 10 images
+The below example generates ten 512x512 images
 
 ``` http request
 POST /imagine HTTP/1.1
@@ -59,8 +61,8 @@ Content-Length: 279
 
 {
    "prompt": "lord of the rings battle scene, highly detailed realistic middle earth, ents orcs knights fighting in battle siege game of thrones rob stark, HDR lighting, birds-eye view",
-   "H": 960,
-   "W": 1280,
+   "H": 512,
+   "W": 512,
    "ddim_steps": 50,
    "n_samples": 2,
    "n_iter": 5
