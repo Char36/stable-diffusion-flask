@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - `Python` >= 3.8
-- `Conda` (latest)
+- [conda](https://docs.conda.io/en/latest/miniconda.html) (latest)
 - [stable diffusion model](#stable-diffusion-model) 
 
 ## Quickstart
