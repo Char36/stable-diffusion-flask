@@ -7,6 +7,8 @@ stable-diffusion-main/models/ldm/stable-diffusion-v1/
 stable-diffusion-main/assets/
 stable-diffusion-main/data/example_conditioning
 stable-diffusion-main/data/inpainting_examples
+stable-diffusion-main/src/
+stable-diffusion-main/logs/
 
 .git/
 # User-specific files

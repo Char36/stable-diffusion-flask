@@ -43,7 +43,7 @@ class StableDiffusion:
     def __init__(self):
         self.config = OmegaConf.load("optimizedSD/v1-inference.yaml")
 
-    def imagine(self, opt: Arguments) -> list:
+    def imagine(self, opt: Arguments, image_format: str) -> list:
         image_data = []
 
         if opt.seed is None:
@@ -180,11 +180,14 @@ class StableDiffusion:
                             x_sample = torch.clamp((x_samples_ddim + 1.0) / 2.0, min=0.0, max=1.0)
                             x_sample = 255.0 * rearrange(x_sample[0].cpu().numpy(), "c h w -> h w c")
 
-                            image = Image.fromarray(x_sample.astype(np.uint8))
-                            img_byte_arr = io.BytesIO()
-                            image.save(img_byte_arr, format=opt.format)
-                            b64_data = base64.b64encode(img_byte_arr.getvalue()).decode()
-                            image_data.append(b64_data)
+                            if image_format == 'binary':
+                                image = Image.fromarray(x_sample.astype(np.uint8))
+                                img_byte_arr = io.BytesIO()
+                                image.save(img_byte_arr, format=opt.format)
+                                b64_data = base64.b64encode(img_byte_arr.getvalue()).decode()
+                                image_data.append(b64_data)
+                            else:
+                                image_data.append(Image.fromarray(x_sample.astype(np.uint8)))
 
                             # Image.fromarray(x_sample.astype(np.uint8)).save(
                             #     os.path.join(sample_path,

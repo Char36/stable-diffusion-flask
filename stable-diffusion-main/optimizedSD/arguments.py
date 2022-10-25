@@ -27,13 +27,13 @@ class Arguments:
     sampler: str = "plms"
     scale: int = 7.5
     fixed_code: bool = True
+    image_format: str = 'binary'
 
     def __init__(self):
         pass
 
-    """ model bind """
-
     def bind_json(self, raw):
+        """ model binds an instance of this class from a raw JSON string """
         dumps = json.loads(raw)
         for field in dataclasses.fields(self):
             try:
