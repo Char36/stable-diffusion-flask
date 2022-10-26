@@ -53,7 +53,7 @@ class StableDiffusion:
         # Logging
         logger(vars(opt), log_csv="logs/txt2img_logs.csv")
 
-        sd = load_model_from_config(f"{DEFAULT_CKPT}")
+        sd = load_model_from_config(DEFAULT_CKPT)
         li, lo = [], []
         for key, value in sd.items():
             sp = key.split(".")

@@ -1,6 +1,6 @@
 import io
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from optimizedSD.arguments import Arguments
 from flask_accept import accept
 from optimizedSD.optimized_txt2img import StableDiffusion
@@ -17,12 +17,17 @@ def serve_pil_image(pil_img):
     return send_file(img_io, mimetype='image/png')
 
 
+@app.route("/", methods=['GET'])
+def index():
+    return render_template('index.html')
+
+
 @app.route("/imagine", methods=['POST'])
 @accept('application/json', '*/*')
 def text_to_image():
     """
      Route for generating and returning `n` image results,
-     where `n` :== `args.n_samples` * `args.n_iter`
+     where `n` :== `args.n_samples`
 
      Serialized as an array of B64-encoded byte arrays.
     """
@@ -42,7 +47,7 @@ def text_to_image_stream():
     args = Arguments()
 
     # Force single image when streaming result content
-    args.n_rows = args.n_iter = args.n_samples = 1
+    args.n_samples = 1
 
     args.bind_json(request.data)
 

@@ -1,0 +1,19 @@
+﻿body {
+    background-color: #141414;
+}
+
+#output {
+    margin-top: 100px;
+}
+
+.row {
+    margin: 5px;
+}
+
+.output-img {
+    margin: 5px;
+}
+
+.header-text {
+    margin-bottom: 20px;
+}

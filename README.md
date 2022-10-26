@@ -68,7 +68,7 @@ Content-Length: 262
 ### Multiple images, JSON serialized response
 
 Returns _n_ images as a JSON array of B64-encoded byte arrays, 
-where _n_ :== _n_samples_ * _n_iter_.
+where _n_ :== _n_samples_.
 
 The below example generates ten 512x512 images
 
