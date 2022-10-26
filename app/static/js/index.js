@@ -1,29 +1,32 @@
 ﻿function imagine(e) {
-    const prompt = $('#prompt');
-    const height = $('#height');
-    const width = $('#width');
-    const samples = $('#samples');
-    const rows = $('#rows');
-    const iterations = $('#iterations');
-    const output = $('#output')
-
     e.preventDefault();
+
+    const prompt = $('#prompt').val();
+    const height = $('#height').val();
+    const width = $('#width').val();
+    const samples = $('#samples').val();
+    const rows = $('#rows').val();
+    const iterations = $('#iterations').val();
+    const guidanceScale = $('#guidance-scale').val();
+    const samplingSteps = $('#sampling-steps').val();
 
     setIsLoading(true);
 
     const seedValue = $('#seed').val().trim();
     const seed = seedValue
-        ? parseInt(seedValue)
+        ? seedValue
         : null;
 
     const requestData = {
-        prompt: prompt.val(),
-        H: parseInt(height.val()),
-        W: parseInt(width.val()),
-        n_samples: parseInt(samples.val()),
-        n_rows: parseInt(rows.val()),
-        n_iter: parseInt(iterations.val()),
-        seed: seed
+        prompt: prompt,
+        H: parseInt(height),
+        W: parseInt(width),
+        n_samples: parseInt(samples),
+        n_rows: parseInt(rows),
+        n_iter: parseInt(iterations),
+        seed: parseInt(seed),
+        scale: parseInt(guidanceScale),
+        ddim_steps: parseInt(samplingSteps)
     };
 
     $.ajax({
@@ -42,7 +45,7 @@
             }
 
             const imageContent = generateImageContent(data);
-            output.html(imageContent);
+            $('#output').html(imageContent);
         },
         error: (request, error) => {
             setIsLoading(false);
@@ -65,6 +68,8 @@ function setIsLoading(isLoading) {
     $('#rows').attr('disabled', isLoading);
     $('#iterations').attr('disabled', isLoading);
     $('#seed').attr('disabled', isLoading);
+    $('#guidance-scale').attr('disabled', isLoading);
+    $('#sampling-steps').attr('disabled', isLoading);
 
     if (isLoading) {
         $('#imagine-text').val("Loading...");
@@ -76,7 +81,18 @@ function setIsLoading(isLoading) {
 function generateImageContent(data) {
     return `
         <div>
-            ${data.map(b64 => `<img src="data:image/png;base64,${b64}" alt="img" class="output-img"/>`)}
+            ${data.map(generateSingleImageContent)}
         </div>
-        `
+    `
+}
+
+function generateSingleImageContent(b64, i) {
+    const fileName = `${Date.now()}-${i}.png`;
+    const href = `data:image/png;base64,${b64}`;
+
+    return ` 
+        <a href="${href}" download="${fileName}" class="output-img">
+            <img src="${href}" alt="img"/>
+        </a>
+    `
 }
