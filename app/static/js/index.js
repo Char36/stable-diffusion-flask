@@ -87,6 +87,7 @@ function generateImageContent(data) {
 }
 
 function generateSingleImageContent(b64, i) {
+    // Generate a unique filename w/ timestamp and sample index
     const fileName = `${Date.now()}-${i}.png`;
     const href = `data:image/png;base64,${b64}`;
 
