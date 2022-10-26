@@ -81,7 +81,7 @@ function setIsLoading(isLoading) {
 function generateImageContent(data) {
     return `
         <div>
-            ${data.map(generateSingleImageContent)}
+            ${data.map(generateSingleImageContent).join('')}
         </div>
     `
 }
