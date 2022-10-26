@@ -24,10 +24,21 @@
     </div>
     <div class="col-md-12">
         <h6>Input prompt below, enter options, click imagine</h6>
+        <p>You can export or import a .pconfig file using the below buttons to save your inputs or restore them.</p>
     </div>
 </div>
 <div class="content">
     <form onsubmit="imagine(event)">
+        <div class="row">
+            <div class="mb-3 meta-buttons">
+                <label for="import" class="file-upload btn btn-dark">import from json file</label>
+                <br/>
+                <input type="file" id="import" name="import" accept=".json" style="display:none;">
+            </div>
+            <div class="mb-3 meta-buttons">
+                <button type="button" id="export" name="import" class="form-control btn btn-dark">Export to json file</button>
+            </div>
+        </div>
         <div class="row header-text">
             <div class="col-md-8">
                 <label for="prompt">Prompt:</label>
@@ -66,7 +77,8 @@
         <div class="row">
             <div class="col-md-2">
                 <label for="guidance-scale">Guidance scale:</label>
-                <input class="form-control" type="number" id="guidance-scale" name="guidance-scale" step="any" value="7.5">
+                <input class="form-control" type="number" id="guidance-scale" name="guidance-scale" step="any"
+                       value="7.5">
             </div>
             <div class="col-md-2">
                 <label for="sampling-steps">Sampling steps:</label>
@@ -83,7 +95,8 @@
         <div class="row">
             <div class="col-md-2">
                 <button type="submit" id="imagine_button" class="btn btn-dark">
-                    <span id="imagine-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
+                    <span id="imagine-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                          hidden></span>
                     <span class="imagine-text">Imagine</span>
                 </button>
             </div>
@@ -99,7 +112,6 @@
         </div>
     </form>
 </div>
-<div id="output">
-</div>
+<div id="output"></div>
 </body>
 </html>

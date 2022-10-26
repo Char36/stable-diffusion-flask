@@ -1,4 +1,9 @@
-﻿function imagine(e) {
+﻿$(document).ready(() => {
+    $('#import').change(async () => await importFile());
+    $('#export').on('click', exportFile);
+});
+
+function imagine(e) {
     e.preventDefault();
 
     const prompt = $('#prompt').val();
@@ -96,4 +101,70 @@ function generateSingleImageContent(b64, i) {
             <img src="${href}" alt="img"/>
         </a>
     `
+}
+
+async function importFile() {
+    const importField = $('#import');
+    const file = importField.prop('files')[0];
+    const text = await file.text();
+    const data = JSON.parse(text);
+    setInputFields(data);
+    importField.val('');
+}
+
+function exportFile() {
+    const data = getInputFieldValues();
+    console.log(data)
+    download(JSON.stringify(data), `${Date.now().toString()}.json`, '.json')
+}
+
+function download(text, name, type) {
+    const a = document.createElement("a");
+    const file = new Blob([text], {type: type});
+    a.href = URL.createObjectURL(file);
+    a.download = name;
+
+    document.body.appendChild(a)
+    a.click();
+    document.body.removeChild(a);
+}
+
+function getInputFields() {
+    return {
+       prompt: $('#prompt'),
+       height: $('#height'), 
+       width: $('#width'),
+       samples: $('#samples'),
+       rows: $('#rows'), 
+       iterations: $('#iterations'),
+       guidanceScale: $('#guidance-scale'),
+       samplingSteps: $('#sampling-steps'),
+       seed: $('#seed')
+    }
+}
+
+function getInputFieldValues() {
+    return {
+        prompt: $('#prompt').val(),
+        height: $('#height').val(),
+        width: $('#width').val(),
+        samples: $('#samples').val(),
+        rows: $('#rows').val(),
+        iterations: $('#iterations').val(),
+        guidanceScale: $('#guidance-scale').val(),
+        samplingSteps: $('#sampling-steps').val(),
+        seed: $('#seed').val()
+    }
+}
+
+function setInputFields(data) {
+    $('#prompt').val(data.prompt);
+    $('#height').val(data.height);
+    $('#width').val(data.width);
+    $('#samples').val(data.samples);
+    $('#rows').val(data.rows),
+    $('#iterations').val(data.iterations);
+    $('#guidance-scale').val(data.guidanceScale);
+    $('#sampling-steps').val(data.samplingSteps);
+    $('#seed').val(data.seed);
 }
