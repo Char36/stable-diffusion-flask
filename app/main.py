@@ -1,5 +1,4 @@
 import io
-
 from flask import Flask, request, jsonify, send_file, render_template
 from optimizedSD.arguments import Arguments
 from flask_accept import accept
@@ -57,10 +56,4 @@ def text_to_image_stream():
     return serve_pil_image(first_result)
 
 
-@app.route("/", methods=['GET'])
-def test():
-    return "hello"
-
-
 app.run()
-print('server started')
