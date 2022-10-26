@@ -3,7 +3,9 @@
 ## Prerequisites
 - `Python` >= 3.8
 - [conda](https://docs.conda.io/en/latest/miniconda.html) (latest)
-- [stable diffusion model](#stable-diffusion-model) 
+- [stable diffusion model](#stable-diffusion-model)
+- Git CLI
+- An HTTP client (cURL, Postman, Insomnia, etc)
 
 ## Quickstart
 ### Stable-diffusion-model
