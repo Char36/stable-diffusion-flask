@@ -34,7 +34,7 @@
                 <textarea class="form-control"
                           rows="3"
                           id="prompt"
-                          placeholder="Ron Desantis butt-naked on election day"
+                          placeholder="Ron Desantis butt-naked on the debate stage"
                           required
                 ></textarea>
             </div>
@@ -67,15 +67,18 @@
         </div>
         <br>
         <div class="row">
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <button type="submit" id="imagine_button" class="btn btn-dark">
-                    Imagine
+                    <span id="imagine-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
+                    <span class="imagine-text">Imagine</span>
                 </button>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-4">
                 <div id="generating" hidden>
-                    <p style="margin-left: 5px; vertical-align: bottom;">
-                        Generating <i>(don't close this window)</i>...
+                    <p>
+                        <i>(don't close this window)</i>
                     </p>
                 </div>
             </div>

@@ -5,12 +5,12 @@
     const samples = $('#samples');
     const rows = $('#rows');
     const iterations = $('#iterations');
-    const imagine_button = $('#imagine_button');
     const generating = $('#generating');
     const output = $('#output')
 
     e.preventDefault();
-    imagine_button.attr("disabled", true);
+
+    setIsLoading(true);
 
     const requestData = {
         prompt: prompt.val(),
@@ -21,7 +21,6 @@
         n_iter: parseInt(iterations.val())
     };
 
-    generating.prop('hidden', false);
 
     $.ajax({
         url: '/imagine',
@@ -31,21 +30,31 @@
         data: JSON.stringify(requestData),
         dataType: 'json',
         success: (data) => {
-            imagine_button.attr("disabled", false);
-            generating.prop('hidden', true);
+            setIsLoading(false);
 
             const imageContent = generateImageContent(data);
             // (imageContent, '_blank', `width=${width},height=${height}`);
             output.html(imageContent);
         },
         error: (request, error) => {
-            imagine_button.attr("disabled", false);
-            generating.prop('hidden', true);
+            setIsLoading(false);
             alert('something went wrong, check backend console');
         }
     });
 
     return false;
+}
+
+function setIsLoading(isLoading) {
+    $('#imagine_button').attr("disabled", isLoading);
+    $('#generating').prop('hidden', !isLoading);
+    $('#imagine-spinner').prop('hidden', !isLoading)
+
+    if (isLoading) {
+        $('#imagine-text').val("Loading...");
+    } else {
+        $('#imagine-text').val("Imagine");
+    }
 }
 
 function generateImageContent(data) {
