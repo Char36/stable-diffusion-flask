@@ -36,7 +36,11 @@ Connected to pydev debugger (build 222.4167.23)
  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
-## Example requests:
+Navigate to http://localhost:5000/ in your browser or click the link from the output, you should see a browser window:
+
+![img](./img/ui.png)
+
+## Example HTTP requests:
 
 ### Common parameters
 for reproducibility, you can set an image `seed`, e.g:
