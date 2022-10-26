@@ -60,6 +60,12 @@ def text_to_image():
 @text_to_image.support('image/png')
 def text_to_image_stream():
     """ Route for streaming a single image result """
+
+    global generating
+
+    if generating:
+        return error('text-to-image operation is already running')
+
     args = Arguments()
 
     # Force single image when streaming result content
@@ -67,7 +73,12 @@ def text_to_image_stream():
 
     args.bind_json(request.data)
 
-    result = model.imagine(args, image_format='png')
+    generating = True
+    try:
+        result = model.imagine(args, image_format='png')
+    finally:
+        generating = False
+
     first_result = result[0]
 
     return serve_pil_image(first_result)
