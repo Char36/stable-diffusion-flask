@@ -5,12 +5,16 @@
     const samples = $('#samples');
     const rows = $('#rows');
     const iterations = $('#iterations');
-    const generating = $('#generating');
     const output = $('#output')
 
     e.preventDefault();
 
     setIsLoading(true);
+
+    const seedValue = $('#seed').val().trim();
+    const seed = seedValue
+        ? parseInt(seedValue)
+        : null;
 
     const requestData = {
         prompt: prompt.val(),
@@ -18,9 +22,9 @@
         W: parseInt(width.val()),
         n_samples: parseInt(samples.val()),
         n_rows: parseInt(rows.val()),
-        n_iter: parseInt(iterations.val())
+        n_iter: parseInt(iterations.val()),
+        seed: seed
     };
-
 
     $.ajax({
         url: '/imagine',
@@ -32,8 +36,12 @@
         success: (data) => {
             setIsLoading(false);
 
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
             const imageContent = generateImageContent(data);
-            // (imageContent, '_blank', `width=${width},height=${height}`);
             output.html(imageContent);
         },
         error: (request, error) => {
@@ -49,6 +57,14 @@ function setIsLoading(isLoading) {
     $('#imagine_button').attr("disabled", isLoading);
     $('#generating').prop('hidden', !isLoading);
     $('#imagine-spinner').prop('hidden', !isLoading)
+
+    $('#prompt').attr('disabled', isLoading);
+    $('#height').attr('disabled', isLoading);
+    $('#width').attr('disabled', isLoading);
+    $('#samples').attr('disabled', isLoading);
+    $('#rows').attr('disabled', isLoading);
+    $('#iterations').attr('disabled', isLoading);
+    $('#seed').attr('disabled', isLoading);
 
     if (isLoading) {
         $('#imagine-text').val("Loading...");

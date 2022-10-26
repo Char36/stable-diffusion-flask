@@ -7,6 +7,8 @@ from optimizedSD.optimized_txt2img import StableDiffusion
 model = StableDiffusion()
 app = Flask(__name__)
 
+generating = False
+
 
 def serve_pil_image(pil_img):
     """ Stream a PIL.Image result """
@@ -14,6 +16,12 @@ def serve_pil_image(pil_img):
     pil_img.save(img_io, 'PNG', quality=100)
     img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
+
+
+def error(message: str):
+    return jsonify({
+        'error': message
+    })
 
 
 @app.route("/", methods=['GET'])
@@ -31,10 +39,19 @@ def text_to_image():
      Serialized as an array of B64-encoded byte arrays.
     """
 
+    global generating
+
+    if generating:
+        return error('text-to-image operation is already running')
+
     args = Arguments()
     args.bind_json(request.data)
 
-    result = model.imagine(args, image_format='binary')
+    generating = True
+    try:
+        result = model.imagine(args, image_format='binary')
+    finally:
+        generating = False
 
     return jsonify(result)
 
