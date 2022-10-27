@@ -3,6 +3,7 @@ import io
 import time
 from contextlib import nullcontext
 from itertools import islice
+from os.path import join
 from random import randint
 
 import numpy as np
@@ -19,7 +20,8 @@ from transformers import logging
 from optimizedSD.optimUtils import split_weighted_subprompts, logger
 from optimizedSD.arguments import Arguments
 
-DEFAULT_CKPT = "models/ldm/stable-diffusion-v1/model.ckpt"
+CKPT_PATH = "models/ldm/stable-diffusion-v1/"
+DEFAULT_CKPT = "v1-5-pruned.ckpt"
 
 # from samplers import CompVisDenoiser
 logging.set_verbosity_error()
@@ -39,7 +41,7 @@ def load_model_from_config(ckpt, verbose=False):
     return sd
 
 
-class StableDiffusion:
+class StableDiffusionTxt2Img:
     def __init__(self):
         self.config = OmegaConf.load("optimizedSD/v1-inference.yaml")
 
@@ -53,7 +55,9 @@ class StableDiffusion:
         # Logging
         logger(vars(opt), log_csv="logs/txt2img_logs.csv")
 
-        sd = load_model_from_config(DEFAULT_CKPT)
+        ckpt_path = join(CKPT_PATH, opt.model or DEFAULT_CKPT)
+
+        sd = load_model_from_config(ckpt_path)
         li, lo = [], []
         for key, value in sd.items():
             sp = key.split(".")

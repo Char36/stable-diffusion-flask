@@ -2,9 +2,12 @@ import io
 from flask import Flask, request, jsonify, send_file, render_template
 from optimizedSD.arguments import Arguments
 from flask_accept import accept
-from optimizedSD.optimized_txt2img import StableDiffusion
+from os import listdir
+from os.path import isfile, join
+from optimizedSD.optimized_txt2img import StableDiffusionTxt2Img
 
-model = StableDiffusion()
+models_path = 'models/ldm/stable-diffusion-v1/'
+model = StableDiffusionTxt2Img()
 app = Flask(__name__)
 
 generating = False
@@ -26,7 +29,8 @@ def error(message: str):
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template('index.html')
+    models = [f for f in listdir(models_path) if isfile(join(models_path, f)) and f.endswith('.ckpt')]
+    return render_template('index.html', models=models)
 
 
 @app.route("/imagine", methods=['POST'])
@@ -40,6 +44,7 @@ def text_to_image():
     """
 
     global generating
+    global model
 
     if generating:
         return error('text-to-image operation is already running')
@@ -62,6 +67,7 @@ def text_to_image_stream():
     """ Route for streaming a single image result """
 
     global generating
+    global model
 
     if generating:
         return error('text-to-image operation is already running')

@@ -14,6 +14,7 @@ function imagine(e) {
     const iterations = $('#iterations').val();
     const guidanceScale = $('#guidance-scale').val();
     const samplingSteps = $('#sampling-steps').val();
+    const modelName = $('#model-select').val();
 
     setIsLoading(true);
 
@@ -21,6 +22,8 @@ function imagine(e) {
     const seed = seedValue
         ? seedValue
         : null;
+    
+    console.log(modelName)
 
     const requestData = {
         prompt: prompt,
@@ -31,7 +34,8 @@ function imagine(e) {
         n_iter: parseInt(iterations),
         seed: parseInt(seed),
         scale: parseInt(guidanceScale),
-        ddim_steps: parseInt(samplingSteps)
+        ddim_steps: parseInt(samplingSteps),
+        model: modelName
     };
 
     $.ajax({
@@ -75,6 +79,7 @@ function setIsLoading(isLoading) {
     $('#seed').attr('disabled', isLoading);
     $('#guidance-scale').attr('disabled', isLoading);
     $('#sampling-steps').attr('disabled', isLoading);
+    $('#model-select').attr('disabled', isLoading);
 
     if (isLoading) {
         $('#imagine-text').val("Loading...");

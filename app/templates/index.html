@@ -73,6 +73,14 @@
                 <label for="iterations">Iterations:</label>
                 <input class="form-control" type="number" id="iterations" name="iterations" value="2">
             </div>
+            <div class="col-md-2">
+                <label for="model-select">Select Model</label>
+                <select class="btn btn-dark dropdown-toggle" type="button" id="model-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% for model in models %}
+                    <option class="dropdown-item" value="{{ model }}">{{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-2">
