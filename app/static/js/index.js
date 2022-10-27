@@ -87,12 +87,17 @@ function setIsLoading(isLoading) {
 }
 
 function generateImageContent(data) {
-    const numColumns = Math.floor(data.length / 2);
+    let numColumns = Math.floor(data.length / 2);
+
+    if (numColumns === 0) {
+        numColumns = 1;
+    }
+
     const batched = batch(data, numColumns);
 
     return `
         <div class="row">
-            ${batched.map(batch => `<div className="column">${batch.map(generateSingleImageContent).join('')}</div>`)}
+            ${batched.map(batch => `<div class="column">${batch.map(generateSingleImageContent).join('')}</div>`)}
         </div>
     `
 }
