@@ -189,14 +189,13 @@ class StableDiffusionTxt2Img:
                                 img_byte_arr = io.BytesIO()
                                 image.save(img_byte_arr, format=opt.format)
                                 b64_data = base64.b64encode(img_byte_arr.getvalue()).decode()
-                                image_data.append(b64_data)
+                                image_data.append({
+                                    'data': b64_data,
+                                    'seed': opt.seed
+                                })
                             else:
                                 image_data.append(Image.fromarray(x_sample.astype(np.uint8)))
 
-                            # Image.fromarray(x_sample.astype(np.uint8)).save(
-                            #     os.path.join(sample_path,
-                            #                  "seed_" + str(opt.seed) + "_" + f"{base_count:05}.{opt.format}")
-                            # )
                             seeds += str(opt.seed) + ","
                             opt.seed += 1
 

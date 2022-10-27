@@ -94,15 +94,18 @@ function generateImageContent(data) {
     `
 }
 
-function generateSingleImageContent(b64, i) {
+function generateSingleImageContent(imageResult) {
     // Generate a unique filename w/ timestamp and sample index
-    const fileName = `${Date.now()}-${i}.png`;
-    const href = `data:image/png;base64,${b64}`;
+    const fileName = `${Date.now()}-${imageResult.seed}.png`;
+    const href = `data:image/png;base64,${imageResult.data}`;
 
     return ` 
-        <a href="${href}" download="${fileName}" class="output-img">
-            <img src="${href}" alt="img"/>
-        </a>
+        <figure>
+            <a href="${href}" download="${fileName}" class="output-img">
+                <img src="${href}" alt="img"/>
+            </a>
+            <figcaption>Seed: ${imageResult.seed}</figcaption>
+        </figure>
     `
 }
 
