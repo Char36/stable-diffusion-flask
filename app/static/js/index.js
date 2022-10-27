@@ -23,8 +23,6 @@ function imagine(e) {
         ? seedValue
         : null;
     
-    console.log(modelName)
-
     const requestData = {
         prompt: prompt,
         H: parseInt(height),
