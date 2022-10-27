@@ -87,9 +87,12 @@ function setIsLoading(isLoading) {
 }
 
 function generateImageContent(data) {
+    const numColumns = Math.floor(data.length / 2);
+    const batched = batch(data, numColumns);
+
     return `
-        <div>
-            ${data.map(generateSingleImageContent).join('')}
+        <div class="row">
+            ${batched.map(batch => `<div className="column">${batch.map(generateSingleImageContent).join('')}</div>`)}
         </div>
     `
 }
@@ -107,6 +110,16 @@ function generateSingleImageContent(imageResult) {
             <figcaption>Seed: ${imageResult.seed}</figcaption>
         </figure>
     `
+}
+
+function batch(array, batchSize) {
+    const result = [];
+
+    while (array.length > 0) {
+        result.push(array.splice(0, batchSize));
+    }
+
+    return result;
 }
 
 async function importFile() {
