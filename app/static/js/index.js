@@ -97,7 +97,7 @@ function generateImageContent(data) {
 
     return `
         <div class="row">
-            ${batched.map(batch => `<div class="column">${batch.map(generateSingleImageContent).join('')}</div>`)}
+            ${batched.map(batch => `<div class="column">${batch.map(generateSingleImageContent).join('')}</div>`).join('')}
         </div>
     `
 }
