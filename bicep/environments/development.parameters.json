@@ -1,15 +1,30 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "tags": {
-            "value": {
-                "test": "abc",
-                "tag": "tag"
-            }
-        },
-        "environmentAbbreviation": {
-            "value": "dev"
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "sdserver"
+    },
+    "adminUsername": {
+      "value": "admin"
+    },
+    "authenticationType": {
+      "value": "password"
+    },
+    "ubuntuOSVersion ": {
+      "value": "18.04-LTS"
+    },
+    "vmSize": {
+      "value": "Standard_B2s"
+    },
+    "virtualNetworkName": {
+      "value": "vNet"
+    },
+    "subnetName": {
+      "value": "Subnet"
+    },
+    "networkSecurityGroupName": {
+      "value": "SecGroupNet"
     }
+  }
 }
