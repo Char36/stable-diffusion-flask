@@ -43,14 +43,16 @@ jobs:
         inline: |
           New-AzResourceGroup `
             -Name sd-rg-dev `
-            -Location 'eastus'
+            -Location 'eastus' `
+            -Confirm
 
           New-AzResourceGroupDeployment `
             -Name New-Guid `
             -ResourceGroupName '${{ variables.resourceGroupName }}' `
             -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
-            -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json'
-            -adminPasswordOrKey '$(variables.SdVMPassword)'
+            -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json' `
+            -Confirm `
+            -adminPasswordOrKey '$(variables.SdVMPassword)' `
             -gitPassword '$(variables.gitPassword)'
 
   # - deployment: vmDeploy
