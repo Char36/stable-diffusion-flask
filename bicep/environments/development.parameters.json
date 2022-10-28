@@ -11,7 +11,7 @@
     "authenticationType": {
       "value": "password"
     },
-    "ubuntuOSVersion ": {
+    "ubuntuOSVersion": {
       "value": "18.04-LTS"
     },
     "vmSize": {
