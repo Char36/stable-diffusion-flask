@@ -40,7 +40,7 @@ jobs:
         VM_PASSWORD: $(variables.SdVMPassword)
         GIT_PASSWORD: $(variables.gitPassword)
       inputs:
-        scriptType: ps
+        scriptType: bash
         azureSubscription: 'c36-sp-dev'
         scriptLocation: 'inlineScript'
         failOnStandardError: true
@@ -54,7 +54,7 @@ jobs:
             --resource-group '${{ variables.resourceGroupName }}' `
             --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
             --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json `
-            --parameters adminPasswordOrKey=$ENV:VM_PASSWORD gitPassword $ENV:GIT_PASSWORD
+            --parameters adminPasswordOrKey=$VM_PASSWORD gitPassword $GIT_PASSWORD
 
           # New-AzResourceGroup `
           #   -Name sd-rg-dev `
