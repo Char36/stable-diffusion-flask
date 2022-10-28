@@ -49,13 +49,13 @@ jobs:
             --name '${{ variables.resourceGroupName }}' \
             --location eastus
 
-          output = az deployment group create \
+          output = $(az deployment group create \
             --name New-Guid \
             --resource-group '${{ variables.resourceGroupName }}' \
             --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
             --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
             --parameters adminPasswordOrKey=$VM_PASSWORD \
-            --parameters gitPassword=$GIT_PASSWORD
+            --parameters gitPassword=$GIT_PASSWORD)
 
           sudo apt-get update
           sudo apt-get install sshpass
