@@ -201,10 +201,8 @@ resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
         bash Anaconda3-2022.05-Linux-x86_64.sh
 
         sudo apt-get install git-all
-
         git clone https://alexdeane:$password@Char36/stable-diffusion-flask
         cd ./stable-diffusion-flask/app/
-
         
         eval "$(conda shell.bash hook)"
         conda env create -f environment.yaml
@@ -221,6 +219,9 @@ resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
     ]
   }
 }
+
+// curl https://dev.azure.com/adeane999/Stable%20Diffusion/_apis/build/builds/$(Build.BuildId)/artifacts?artifactName=drop&api-version=4.1 --output archive.tar.gz
+
 
 output adminUsername string = adminUsername
 output hostname string = publicIP.properties.dnsSettings.fqdn
