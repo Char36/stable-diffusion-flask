@@ -9,11 +9,75 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  - name: resourceGroupName
+    value: 'sd-rg-dev'
+  - group: 'sd-vm-secrets'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+  - job: 
+    displayName: 'Build artifact and deploy bicep'
+    workspace:
+      clean: all
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive application'
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)' 
+        includeRootFolder: false 
+        archiveType: 'tar' # Options: zip, 7z, tar, wim
+        tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz' 
+        replaceExistingArchive: true 
+        verbose: true
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
+      artifact: drop
+
+    - task: AzurePowerShell@5
+      displayName: 'Run Bicep & package app'
+      inputs:
+        azureSubscription: 'c36-sp-dev'
+        scriptType: 'inlineScript'
+        inline: |
+          New-AzResourceGroup `
+            -Name sd-rg-dev `
+            -Location 'eastus'
+
+          New-AzResourceGroupDeployment `
+            -Name New-Guid `
+            -ResourceGroupName '${{ variables.resourceGroupName }}' `
+            -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
+            -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json'
+            -adminPasswordOrKey '$(variables.SdVMPassword)'
+
+  - deployment: vmDeploy
+    displayName: deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment:
+      name:  'sd-vm-dev'
+      resourceType: VirtualMachine
+      tags: web
+    strategy:
+      runOnce:
+        preDeploy:
+          steps:
+            - download: current
+              artifact: drop
+        deploy:
+          steps:
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Modify deployment script based on the app type
+                  echo "Starting deployment script run"
+                  tar -xf drop.tar.gz -C ./artifact
+                  cd ./artifact/app
+
+                  eval "$(conda shell.bash hook)"
+                  conda env create -f environment.yaml
+                  conda activate ldm2
+
+                  python -m flask run --port=80 --app main
