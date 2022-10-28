@@ -45,9 +45,16 @@ jobs:
         scriptLocation: 'inlineScript'
         failOnStandardError: true
         inlineScript:  |
-          az group create --name '${{ variables.resourceGroupName }}' --location eastus
+          az group create \
+            --name '${{ variables.resourceGroupName }}' \
+            --location eastus
 
-          az deployment group create --name New-Guid --resource-group '${{ variables.resourceGroupName }}' --template-file $(Build.SourcesDirectory)/bicep/main.bicep --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json --parameters adminPasswordOrKey=$VM_PASSWORD gitPassword $GIT_PASSWORD
+          az deployment group create \
+            --name New-Guid \
+            --resource-group '${{ variables.resourceGroupName }}' \
+            --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
+            --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
+            --parameters adminPasswordOrKey=$VM_PASSWORD gitPassword=$GIT_PASSWORD
 
           # New-AzResourceGroup `
           #   -Name sd-rg-dev `
