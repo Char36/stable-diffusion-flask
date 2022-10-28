@@ -44,13 +44,7 @@ jobs:
           -VmPassword $(variables.SdVMPassword)
           -GitPassword $(variables.gitPassword)
         inline: |
-          param(
-            [string]
-            $VmPassword,
-
-            [string]
-            $GitPassword
-          )
+          param($VmPassword, $GitPassword)
 
           New-AzResourceGroup `
             -Name sd-rg-dev `
