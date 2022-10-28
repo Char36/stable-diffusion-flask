@@ -51,33 +51,33 @@ jobs:
             -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json'
             -adminPasswordOrKey '$(variables.SdVMPassword)'
 
-  - deployment: vmDeploy
-    displayName: deploy
-    pool:
-      vmImage: 'ubuntu-latest'
-    environment:
-      name:  'sd-vm-dev'
-      resourceType: VirtualMachine
-      tags: web
-    strategy:
-      runOnce:
-        preDeploy:
-          steps:
-            - download: current
-              artifact: drop
-        deploy:
-          steps:
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                  # Modify deployment script based on the app type
-                  echo "Starting deployment script run"
-                  tar -xf drop.tar.gz -C ./artifact
-                  cd ./artifact/app
+  # - deployment: vmDeploy
+  #   displayName: deploy
+  #   pool:
+  #     vmImage: 'ubuntu-latest'
+  #   # environment:
+  #   #   name:  'sd-vm-dev'
+  #   #   resourceType: VirtualMachine
+  #   #   tags: web
+  #   strategy:
+  #     runOnce:
+  #       preDeploy:
+  #         steps:
+  #           - download: current
+  #             artifact: drop
+  #       deploy:
+  #         steps:
+  #           - task: Bash@3
+  #             inputs:
+  #               targetType: 'inline'
+  #               script: |
+  #                 # Modify deployment script based on the app type
+  #                 echo "Starting deployment script run"
+  #                 tar -xf drop.tar.gz -C ./artifact
+  #                 cd ./artifact/app
 
-                  eval "$(conda shell.bash hook)"
-                  conda env create -f environment.yaml
-                  conda activate ldm2
+  #                 eval "$(conda shell.bash hook)"
+  #                 conda env create -f environment.yaml
+  #                 conda activate ldm2
 
-                  python -m flask run --port=80 --app main
+  #                 python -m flask run --port=80 --app main

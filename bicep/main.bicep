@@ -199,8 +199,26 @@ resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
 
         wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
         bash Anaconda3-2022.05-Linux-x86_64.sh
+
+        sudo apt-get install git-all
+
+        git clone https://alexdeane:$password@Char36/stable-diffusion-flask
+        cd ./stable-diffusion-flask/app/
+
+        
+        eval "$(conda shell.bash hook)"
+        conda env create -f environment.yaml
+        conda activate ldm2
+
+        python -m flask run --port=80 --app main
       '''
     }
+    parameters: [
+      {
+        name: 'password'
+        value: gitPassword
+      }
+    ]
   }
 }
 
