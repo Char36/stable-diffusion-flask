@@ -45,13 +45,11 @@ jobs:
           -GitPassword $(variables.gitPassword)
         inline: |
           param(
-            [Parameter()]
             [string]
             $VmPassword,
 
-            [Parameter()]
             [string]
-            $GitPassword,
+            $GitPassword
           )
 
           New-AzResourceGroup `
