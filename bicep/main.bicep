@@ -187,42 +187,23 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
-resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
-  parent: vm
-  location: location
-  name: 'downloadDependencies'
-  properties: {
-    source: {
-      script: '''
-        mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "$(command -v systemctl)" ]; then ./config.sh --environment --environmentname "sd-vm-dev" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token vs3cg234g4djjn2jz3z4nwotdkpfudtpbjrs7grzjd7pag7fo7gq --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "sd-vm-dev" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token vs3cg234g4djjn2jz3z4nwotdkpfudtpbjrs7grzjd7pag7fo7gq; ./run.sh; fi
-        sudo apt-get update
-
-        sudo apt-get install libapache2-mod-wsgi-py3  #for python 3
-        sudo apt-get -y install python3 python3-dev
-        sudo apt-get -y install nginx
-
-        wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
-        bash Anaconda3-2022.05-Linux-x86_64.sh
-
-        sudo apt-get install git-all
-        git clone https://alexdeane:$password@Char36/stable-diffusion-flask
-        cd ./stable-diffusion-flask/app/
-        
-        eval "$(conda shell.bash hook)"
-        conda env create -f environment.yaml
-        conda activate ldm2
-
-        python -m flask run --port=80 --app main
-      '''
-    }
-    parameters: [
-      {
-        name: 'password'
-        value: gitPassword
-      }
-    ]
-  }
-}
+// resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
+//   parent: vm
+//   location: location
+//   name: 'downloadDependencies'
+//   properties: {
+//     source: {
+//       script: '''
+//       '''
+//     }
+//     parameters: [
+//       {
+//         name: 'password'
+//         value: gitPassword
+//       }
+//     ]
+//   }
+// }
 
 // curl https://dev.azure.com/adeane999/Stable%20Diffusion/_apis/build/builds/$(Build.BuildId)/artifacts?artifactName=drop&api-version=4.1 --output archive.tar.gz
 
