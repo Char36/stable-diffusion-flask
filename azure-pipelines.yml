@@ -35,9 +35,10 @@ jobs:
       artifact: drop
 
     - task: AzurePowerShell@5
-      displayName: 'Run Bicep & package app'
+      displayName: 'Run Bicep'
       inputs:
         azureSubscription: 'c36-sp-dev'
+        azurePowerShellVersion: 'LatestVersion'
         scriptType: 'inlineScript'
         inline: |
           New-AzResourceGroup `
