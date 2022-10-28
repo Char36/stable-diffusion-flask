@@ -44,14 +44,14 @@ jobs:
           New-AzResourceGroup `
             -Name sd-rg-dev `
             -Location 'eastus' `
-            -Confirm
+            -Force
 
           New-AzResourceGroupDeployment `
             -Name New-Guid `
             -ResourceGroupName '${{ variables.resourceGroupName }}' `
             -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
             -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json' `
-            -Confirm `
+            -Force `
             -adminPasswordOrKey '$(variables.SdVMPassword)' `
             -gitPassword '$(variables.gitPassword)'
 
