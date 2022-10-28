@@ -51,6 +51,7 @@ jobs:
             -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
             -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json'
             -adminPasswordOrKey '$(variables.SdVMPassword)'
+            -gitPassword '$(variables.gitPassword)'
 
   # - deployment: vmDeploy
   #   displayName: deploy
