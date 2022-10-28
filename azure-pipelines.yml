@@ -34,31 +34,40 @@ jobs:
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
       artifact: drop
 
-    - task: AzurePowerShell@5
+    - task: AzureCLI@2
       displayName: 'Run Bicep'
+      env:
+        VM_PASSWORD: $(variables.SdVMPassword)
+        GIT_PASSWORD: $(variables.gitPassword)
       inputs:
+        scriptType: ps
         azureSubscription: 'c36-sp-dev'
-        azurePowerShellVersion: 'LatestVersion'
-        scriptType: 'inlineScript'
-        ScriptArguments:
-          -VmPassword $(variables.SdVMPassword)
-          -GitPassword $(variables.gitPassword)
-        inline: |
-          param($VmPassword, $GitPassword)
+        scriptLocation: 'inlineScript'
+        failOnStandardError: true
+        inlineScript:  |
+          az group create `
+            --name '${{ variables.resourceGroupName }}' `
+            --location eastus
 
-          New-AzResourceGroup `
-            -Name sd-rg-dev `
-            -Location 'eastus' `
-            -Force
+          az deployment group create `
+            --name New-Guid `
+            --resource-group '${{ variables.resourceGroupName }}' `
+            --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
+            --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json `
+            --parameters adminPasswordOrKey=$ENV:VM_PASSWORD gitPassword $ENV:GIT_PASSWORD
 
-          New-AzResourceGroupDeployment `
-            -Name New-Guid `
-            -ResourceGroupName '${{ variables.resourceGroupName }}' `
-            -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
-            -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json' `
-            -Force `
-            -adminPasswordOrKey $VmPassword `
-            -gitPassword $GitPassword
+          # New-AzResourceGroup `
+          #   -Name sd-rg-dev `
+          #   -Location 'eastus' `
+          #   -Force
+
+          # New-AzResourceGroupDeployment `
+          #   -Name New-Guid `
+          #   -ResourceGroupName '${{ variables.resourceGroupName }}' `
+          #   -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
+          #   -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json' `
+          #   -Force `
+          #   --parameters adminPasswordOrKey=$ENV:VM_PASSWORD gitPassword $ENV:GIT_PASSWORD
 
   # - deployment: vmDeploy
   #   displayName: deploy
