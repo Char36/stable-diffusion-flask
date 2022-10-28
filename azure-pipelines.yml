@@ -37,8 +37,8 @@ jobs:
     - task: AzureCLI@2
       displayName: 'Run Bicep'
       env:
-        VM_PASSWORD: $(variables.SdVMPassword)
-        GIT_PASSWORD: $(variables.gitPassword)
+        VM_PASSWORD: $(SdVMPassword)
+        GIT_PASSWORD: $(gitPassword)
       inputs:
         scriptType: bash
         azureSubscription: 'c36-sp-dev'
