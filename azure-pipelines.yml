@@ -41,9 +41,19 @@ jobs:
         azurePowerShellVersion: 'LatestVersion'
         scriptType: 'inlineScript'
         ScriptArguments:
-          -VM_PASSWORD $(variables.SdVMPassword)
-          -GIT_PASSWORD $(variables.gitPassword)
+          -VmPassword $(variables.SdVMPassword)
+          -GitPassword $(variables.gitPassword)
         inline: |
+          param(
+            [Parameter()]
+            [string]
+            $VmPassword,
+
+            [Parameter()]
+            [string]
+            $GitPassword,
+          )
+
           New-AzResourceGroup `
             -Name sd-rg-dev `
             -Location 'eastus' `
@@ -55,8 +65,8 @@ jobs:
             -TemplateFile '$(Build.SourcesDirectory)/bicep/main.bicep' `
             -TemplateParameterFile '$(Build.SourcesDirectory)/bicep/environments/development.parameters.json' `
             -Force `
-            -adminPasswordOrKey $ENV:VM_PASSWORD `
-            -gitPassword $ENV:GIT_PASSWORD
+            -adminPasswordOrKey $VmPassword `
+            -gitPassword $GitPassword
 
   # - deployment: vmDeploy
   #   displayName: deploy
