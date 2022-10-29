@@ -49,7 +49,7 @@ jobs:
             --name '${{ variables.resourceGroupName }}' \
             --location eastus
 
-          $output = $(az deployment group create \
+          output = $(az deployment group create \
             --name New-Guid \
             --resource-group '${{ variables.resourceGroupName }}' \
             --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
