@@ -87,8 +87,7 @@ jobs:
     - task: PowerShell@2
       displayName: 'Register environment'
       env:
-        VM_PASSWORD: $(SdVMPassword)
-        GIT_PASSWORD: $(gitPassword)
+        VM_PASSWORD: $(pat)
       inputs:
         pwsh: true
         targetType: 'filePath'
