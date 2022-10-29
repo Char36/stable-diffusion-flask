@@ -56,7 +56,7 @@ jobs:
             --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
             --parameters adminPasswordOrKey=$VM_PASSWORD \
             --parameters gitPassword=$GIT_PASSWORD)
-
+          
           echo $output
 
           sudo apt-get update
@@ -64,6 +64,12 @@ jobs:
           sudo apt-get install jq
 
           sshCmd = `$output | jq -r '.sshCommand'`
+
+          if [ -z "$sshCmd" ];
+          then
+            echo "missing ssh command from bicep output"
+            exit 1;
+          fi
 
           sshpass -p $SdVMPassword $sshCmd
               
