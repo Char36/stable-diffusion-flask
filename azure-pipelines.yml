@@ -49,7 +49,7 @@ jobs:
             --name '${{ variables.resourceGroupName }}' \
             --location eastus
 
-          output = $(az deployment group create \
+          output=$(az deployment group create \
             --name New-Guid \
             --resource-group '${{ variables.resourceGroupName }}' \
             --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
@@ -63,11 +63,11 @@ jobs:
           sudo apt-get install sshpass
           sudo apt-get install jq
 
-          sshCmd = `$output | jq -r '.sshCommand'`
+          sshCmd=`$output | jq -r '.sshCommand'`
 
           if [ -z "$sshCmd" ];
           then
-            echo "missing ssh command from bicep output"
+            echo "##[error] missing ssh command from bicep output"
             exit 1;
           fi
 
