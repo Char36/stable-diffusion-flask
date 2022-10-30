@@ -78,7 +78,7 @@ jobs:
           sudo apt-get -y install nginx
 
           wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
-          bash Anaconda3-2022.05-Linux-x86_64.sh
+          yes no | ./Anaconda3-5.1.0-Linux-x86_64.sh
 
           sudo apt-get install git-all
           git clone https://alexdeane:$password@Char36/stable-diffusion-flask
