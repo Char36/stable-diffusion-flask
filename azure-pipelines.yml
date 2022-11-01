@@ -56,8 +56,7 @@ jobs:
               --resource-group '${{ variables.resourceGroupName }}' \
               --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
               --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
-              --parameters adminPasswordOrKey=$VM_PASSWORD \
-              --parameters gitPassword=$GIT_PASSWORD)
+              --parameters adminPasswordOrKey=$VM_PASSWORD)
             
             echo $output
   
