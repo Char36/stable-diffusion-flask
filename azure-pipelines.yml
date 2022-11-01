@@ -84,15 +84,6 @@ jobs:
             #          conda activate ldm2
   
             # python -m flask run --port=80 --app main
-  
-      - task: PowerShell@2
-        displayName: 'Register environment'
-        env:
-          VM_PASSWORD: $(pat)
-        inputs:
-          pwsh: true
-          targetType: 'filePath'
-          filePath:  $(Build.SourcesDirectory)/azp/register.ps1
 
   - deployment: vmDeploy
     displayName: deploy
@@ -111,6 +102,15 @@ jobs:
         steps:
           - download: current
             artifact: drop
+
+          - task: PowerShell@2
+            displayName: 'Register environment'
+            env:
+              VM_PASSWORD: $(pat)
+            inputs:
+              pwsh: true
+              targetType: 'filePath'
+              filePath: $(Build.SourcesDirectory)/azp/register.ps1
       deploy:
         steps:
           - task: Bash@3
