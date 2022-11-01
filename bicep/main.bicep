@@ -75,7 +75,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: subnet.id
+            id: vnet.properties.subnets[0].id
           }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
@@ -121,16 +121,16 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         addressPrefix
       ]
     }
-  }
-}
-
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  parent: vnet
-  name: subnetName
-  properties: {
-    addressPrefix: subnetAddressPrefix
-    privateEndpointNetworkPolicies: 'Enabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: subnetAddressPrefix
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+    ]
   }
 }
 
@@ -206,7 +206,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 // }
 
 // curl https://dev.azure.com/adeane999/Stable%20Diffusion/_apis/build/builds/$(Build.BuildId)/artifacts?artifactName=drop&api-version=4.1 --output archive.tar.gz
-
 
 output adminUsername string = adminUsername
 output hostname string = publicIP.properties.dnsSettings.fqdn
