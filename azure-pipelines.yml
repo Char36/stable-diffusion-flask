@@ -91,7 +91,7 @@ jobs:
         inputs:
           pwsh: true
           targetType: 'filePath'
-          filePath:  $(Build.SourcesDirectory)\azp\register.ps1
+          filePath:  $(Build.SourcesDirectory)/azp/register.ps1
 
   - deployment: vmDeploy
     displayName: deploy
