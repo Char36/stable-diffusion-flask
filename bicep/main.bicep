@@ -1,7 +1,7 @@
-// Parameters
-@description('password for github')
-@secure()
-param gitPassword string
+// // Parameters
+// @description('password for github')
+// @secure()
+// param gitPassword string
 
 @description('The name of you Virtual Machine.')
 param vmName string = 'sdserver'
