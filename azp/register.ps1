@@ -9,14 +9,14 @@ If($PSVersionTable.PSVersion -lt (New-Object System.Version("3.0")))
     throw "The minimum version of Windows PowerShell that is required by the script (3.0) does not match the currently running version of Windows PowerShell."
 };
 
-If(-NOT (Test-Path $env:SystemDrive\'azagent'))
+If(-NOT (Test-Path $env:SystemDrive/'azagent'))
 {
-    mkdir $env:SystemDrive\'azagent'
+    mkdir $env:SystemDrive/'azagent'
 };
 
 $agentName = $env:COMPUTERNAME;
 
-cd $env:SystemDrive\'azagent';
+cd $env:SystemDrive/'azagent';
 
 # Create a unique A* folder for the agent using i as the index
 for($i=1; $i -lt 100; $i++)
@@ -33,7 +33,7 @@ for($i=1; $i -lt 100; $i++)
     }
 };
 
-$agentZip="$PWD\agent.zip";
+$agentZip="$PWD/agent.zip";
 
 
 # Configure the web client used to download the zip file with the agent
@@ -90,16 +90,16 @@ Remove-Item $agentZip;
 Write-Host "Register agent $agentName in $Environment";
 if ([string]::IsNullOrWhiteSpace($Tags))
 {
-    .\config.cmd --unattended --environment --environmentname $Environment --agent $agentName --runasservice --work '_work' --url $OrganizationUrl --projectname $TeamProject --auth PAT --token $env:Token;
+    ./config.cmd --unattended --environment --environmentname $Environment --agent $agentName --runasservice --work '_work' --url $OrganizationUrl --projectname $TeamProject --auth PAT --token $env:Token;
 }
 else
 {
-    .\config.cmd --unattended --environment --environmentname $Environment --agent $agentName --runasservice --work '_work' --url $OrganizationUrl --projectname $TeamProject --auth PAT --token $env:Token --addvirtualmachineresourcetags --virtualmachineresourcetags "$($Tags)";
+    ./config.cmd --unattended --environment --environmentname $Environment --agent $agentName --runasservice --work '_work' --url $OrganizationUrl --projectname $TeamProject --auth PAT --token $env:Token --addvirtualmachineresourcetags --virtualmachineresourcetags "$($Tags)";
 }
 
 
 # Raise an exception if the registration of the agent failed
 if ($LastExitCode -ne 0)
 {
-    throw "Error during registration. See '$PWD\_diag' for more information.";
+    throw "Error during registration. See '$PWD/_diag' for more information.";
 }
