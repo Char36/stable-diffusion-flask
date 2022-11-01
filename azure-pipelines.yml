@@ -100,20 +100,19 @@ jobs:
       resourceType: VirtualMachine
     strategy:
      runOnce:
-      preDeploy:
-        steps:
-          - download: current
-            artifact: drop
-
-          - task: PowerShell@2
-            displayName: 'Register environment'
-            env:
-              VM_PASSWORD: $(pat)
-            inputs:
-              pwsh: true
-              targetType: 'filePath'
-              filePath: $(Build.SourcesDirectory)/azp/register.ps1
-
+#      preDeploy:
+#        steps:
+#          - download: current
+#            artifact: drop
+#
+#          - task: PowerShell@2
+#            displayName: 'Register environment'
+#            env:
+#              VM_PASSWORD: $(pat)
+#            inputs:
+#              pwsh: true
+#              targetType: 'filePath'
+#              filePath: $(Build.SourcesDirectory)/azp/register.ps1
       deploy:
         steps:
           - task: Bash@3
