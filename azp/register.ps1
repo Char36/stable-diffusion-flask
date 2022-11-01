@@ -3,10 +3,6 @@ $TeamProject = 'Stable Diffusion'
 $Environment = "sd-vm-dev"
 
 $ErrorActionPreference="Stop";
-If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] "Administrator"))
-{
-    throw "Run command in an administrator PowerShell prompt"
-};
 
 If($PSVersionTable.PSVersion -lt (New-Object System.Version("3.0")))
 {
