@@ -1,6 +1,6 @@
 $OrganizationUrl = 'adeane999'
 $TeamProject = 'Stable Diffusion'
-$Environment = "vm-$ENV:BuilId"
+$Environment = "sd-vm-dev"
 
 $ErrorActionPreference="Stop";
 If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] "Administrator"))
