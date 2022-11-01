@@ -80,7 +80,6 @@ jobs:
             mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "$(command -v systemctl)" ]; then ./config.sh --environment --environmentname "sd-vm-dev" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token tdoh6ylfeviw4iuk7pkxqrnnyxvr5dou4uda447bxp27wypgvb7q --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "sd-vm-dev" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token "$personalAccessToken"; ./run.sh; fi
   
             echo "##vso[task.setvariable variable=sshCmd;isoutput=true;issecret=true]$sshCmd"
-            echo "##vso[task.setvariable variable=hostName;isoutput=true]$HOSTNAME"
             
             #          sudo apt-get install git-all
             #          git clone https://alexdeane:$GIT_PASSWORD@github.com/Char36/stable-diffusion-flask
@@ -100,7 +99,7 @@ jobs:
     pool:
      vmImage: 'ubuntu-latest'
     environment:
-      name: $[ dependencies.infrastructure.outputs['bicep.hostName'] ]
+      name: 'sd-vm-dev'
       resourceType: VirtualMachine
     strategy:
      runOnce:
