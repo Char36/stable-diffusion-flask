@@ -68,11 +68,7 @@ jobs:
   
             sshCmd=$(echo "$output" | jq -r '.properties.outputs.sshCommand.value')
   
-            [[ -z "${sshCmd// }" ]]
-            then
-              echo "##[error] missing ssh command from bicep output"
-              exit 1;
-            fi
+            [[ -z "${sshCmd// }" ]] && echo "##[error] missing ssh command from bicep output" && exit 1;
 
             echo $sshCmd
             
