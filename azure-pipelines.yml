@@ -15,9 +15,8 @@ variables:
   - group: 'sd-vm-secrets'
 
 jobs:
-  - job: 
+  - job: infrastructure
     displayName: 'Build artifact and deploy bicep'
-    name: infrastructure
     workspace:
       clean: all
     steps:
@@ -108,36 +107,36 @@ jobs:
       tags: web
     strategy:
      runOnce:
-       predeploy:
-         steps:
-           - download: current
-             artifact: drop
-       deploy:
-         steps:
-           - task: Bash@3
-             inputs:
-               targetType: 'inline'
-               script: |
-                 # Modify deployment script based on the app type
-                 echo "Starting deployment script run"
-                 tar -xf drop.tar.gz -C ./artifact
-                 cd ./artifact/app
-                 ls
+      preDeploy:
+        steps:
+          - download: current
+            artifact: drop
+      deploy:
+        steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Modify deployment script based on the app type
+                echo "Starting deployment script run"
+                tar -xf drop.tar.gz -C ./artifact
+                cd ./artifact/app
+                ls
 
-                 if [ -z "$sshCmd" ];
-                 then
-                   echo "##[error] missing ssh command from bicep output"
-                   exit 1;
-                 fi
- 
-                 # sshpass -p "$SdVMPassword" "$sshCmd"
+                if [ -z "$sshCmd" ];
+                then
+                  echo "##[error] missing ssh command from bicep output"
+                  exit 1;
+                fi
 
-                 sudo apt-get install libapache2-mod-wsgi-py3  #for python 3
-                 sudo apt-get -y install python3 python3-dev
-                 sudo apt-get -y install nginx
-                 
-                 wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
-                 yes no | ./Anaconda3-2022.05-Linux-x86_64.sh
+                # sshpass -p "$SdVMPassword" "$sshCmd"
+
+                sudo apt-get install libapache2-mod-wsgi-py3  #for python 3
+                sudo apt-get -y install python3 python3-dev
+                sudo apt-get -y install nginx
+                
+                wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
+                yes no | ./Anaconda3-2022.05-Linux-x86_64.sh
   
   
   #                 eval "$(conda shell.bash hook)"
