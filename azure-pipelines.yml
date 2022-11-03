@@ -70,9 +70,8 @@ jobs:
   
             [[ -z "${sshCmd// }" ]] && echo "##[error] missing ssh command from bicep output" && exit 1;
 
-            echo $sshCmd
-            
-            sshpass -p "$SdVMPassword" $sshCmd
+            cmd="sshpass -p \"$SdVMPassword\" $sshCmd";
+            eval $cmd;
 
             if [ !$? ]
               then
