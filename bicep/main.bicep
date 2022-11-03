@@ -209,4 +209,4 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 
 output adminUsername string = adminUsername
 output hostname string = publicIP.properties.dnsSettings.fqdn
-output sshCommand string = 'ssh ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
+output sshCommand string = 'ssh -o "StrictHostKeyChecking no" ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
