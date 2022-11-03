@@ -75,7 +75,7 @@ jobs:
             \nEOF\n
             )
 
-            cmd="sshpass -p \"$VM_PASSWORD\" $sshCmd | $registerCmd"
+            cmd="sshpass -p \"$VM_PASSWORD\" $sshCmd $registerCmd"
 
             echo $cmd;
             eval $cmd;
