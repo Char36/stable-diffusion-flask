@@ -72,8 +72,8 @@ jobs:
 
             [[ -z "${sshCmd// }" ]] && echo "##[error] missing ssh command from bicep output" && exit 1;
 
-            echo sshpass -p "$VM_PASSWORD" ssh "$sshUsername"@"$hostName" "{ yes '' | mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x '"'$(command -v systemctl)'"' ]; then ./config.sh --environment --environmentname '"'sd-vm-dev'"' --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname '"'sd-vm-dev'"' --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; bash -c ./run.sh; fi; }"
-            sshpass -p "$VM_PASSWORD" ssh "$sshUsername"@"$hostName" "{ yes '' | mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x '"'$(command -v systemctl)'"' ]; then ./config.sh --environment --environmentname '"'sd-vm-dev'"' --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname '"'sd-vm-dev'"' --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; bash -c ./run.sh; fi; }"
+            echo sshpass -p "$VM_PASSWORD" ssh "$sshUsername"@"$hostName" "{ yes '' | mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "'"'"$(command -v systemctl)"'"'" ]; then ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; bash -c ./run.sh; fi; }"
+            sshpass -p "$VM_PASSWORD" ssh "$sshUsername"@"$hostName" "{ yes '' | mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "'"'"$(command -v systemctl)"'"'" ]; then ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; bash -c ./run.sh; fi; }"
             
             if [ !$? ]
               then
@@ -82,7 +82,7 @@ jobs:
                 exit 1;
             fi
 
-            echo "##vso[task.setvariable variable=sshCmd;isoutput=true;issecret=true]$sshCmd"
+            # echo "##vso[task.setvariable variable=sshCmd;isoutput=true;issecret=true]$sshCmd"
             
             #          sudo apt-get install git-all
             #          git clone https://alexdeane:$GIT_PASSWORD@github.com/Char36/stable-diffusion-flask
