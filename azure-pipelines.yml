@@ -6,6 +6,11 @@
 trigger:
 - deploy
 
+parameters:
+  - name: runInfrastructure
+    type: boolean
+    default: true
+
 pool:
   vmImage: ubuntu-latest
 
@@ -16,6 +21,7 @@ variables:
 
 jobs:
   - job: infrastructure
+    condition: ${{ parameters.runInfrastructure }}
     displayName: 'Build artifact and deploy bicep'
     workspace:
       clean: all
