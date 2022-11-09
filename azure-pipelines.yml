@@ -136,11 +136,11 @@ jobs:
                 cd ./artifact/app
                 ls
 
-                if [ -z "$sshCmd" ];
-                then
-                  echo "##[error] missing ssh command from bicep output"
-                  exit 1;
-                fi
+                # if [ -z "$sshCmd" ];
+                # then
+                #   echo "##[error] missing ssh command from bicep output"
+                #   exit 1;
+                # fi
 
                 # sshpass -p "$SdVMPassword" "$sshCmd"
 
