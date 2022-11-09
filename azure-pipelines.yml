@@ -102,7 +102,7 @@ jobs:
   - deployment: vmDeploy
     displayName: deploy
     dependsOn: infrastructure
-    condition: always
+    condition: always()
     variables:
       sshCmd: $[ dependencies.infrastructure.outputs['bicep.sshCmd'] ]
     pool:
