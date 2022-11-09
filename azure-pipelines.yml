@@ -21,7 +21,6 @@ variables:
 
 jobs:
   - job: infrastructure
-    condition: ${{ parameters.runInfrastructure }}
     displayName: 'Build artifact and deploy bicep'
     workspace:
       clean: all
@@ -43,6 +42,7 @@ jobs:
       - task: AzureCLI@2
         displayName: 'Run Bicep'
         name: bicep
+        condition: ${{ parameters.runInfrastructure }}
         env:
           VM_PASSWORD: $(SdVMPassword)
           GIT_PASSWORD: $(gitPassword)
@@ -102,7 +102,6 @@ jobs:
   - deployment: vmDeploy
     displayName: deploy
     dependsOn: infrastructure
-    condition: always()
     variables:
       sshCmd: $[ dependencies.infrastructure.outputs['bicep.sshCmd'] ]
     pool:
