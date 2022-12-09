@@ -55,7 +55,7 @@ class StableDiffusionTxt2Img:
         # Logging
         logger(vars(opt), log_csv="logs/txt2img_logs.csv")
 
-        ckpt_path = join(CKPT_PATH, opt.model or DEFAULT_CKPT)
+        ckpt_path = join(CKPT_PATH, DEFAULT_CKPT)
 
         sd = load_model_from_config(ckpt_path)
         li, lo = [], []

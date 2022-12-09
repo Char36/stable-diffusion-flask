@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Arguments:
-    model: str
     prompt: str
     from_file: bool = False
     outdir: str = "outputs/txt2img-samples"
