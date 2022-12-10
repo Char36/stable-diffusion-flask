@@ -31,11 +31,11 @@ jobs:
         - checkout: self
 
         - task: PowerShell@2
+          displayName: 'Compile app'
           inputs: 
             targetType: 'inline'
             failOnStderr: true
             script: |
-              ls
               cd .\app\
               python -m py_compile main.py
 
