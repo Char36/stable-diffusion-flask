@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from app import imagine_service_pb2_grpc
@@ -12,27 +13,41 @@ models_path = 'models/ldm/stable-diffusion-v1/'
 model = StableDiffusionTxt2Img()
 
 generating = False
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
-def get_arguments(request: imagine__service__pb2.ImagineRequest) -> Arguments:
-    # TODO: map request (this does not work)
+def map_arguments(request: imagine__service__pb2.ImagineRequest) -> Arguments:
     arguments = Arguments()
-    arguments.__dict__ = request.__dict__.copy()
+
+    arguments.prompt = request.data.prompt
+    arguments.ddim_steps = request.data.ddim_steps
+    arguments.n_iter = request.data.n_iter
+    arguments.H = request.data.H
+    arguments.W = request.data.W
+    arguments.C = request.data.C
+    arguments.f = request.data.f
+    arguments.n_samples = request.data.n_samples
+    arguments.n_rows = request.data.n_rows
+    arguments.seed = request.data.seed
+    arguments.turbo = request.data.turbo
+    arguments.scale = request.data.scale
+
     return arguments
 
 
 def build_response(result) -> imagine__service__pb2.ImagineResponse:
+    """
+    """
+
     imagine_response = imagine__service__pb2.ImagineResponse()
-    imagine_response.image_data[:] = map_image_data(result)
-    return imagine_response
 
-
-def map_image_data(result) -> List[imagine__service__pb2.ImageData]:
     for image in result:
         image_data = imagine__service__pb2.ImageData()
-        image_data.seed = image.seed
-        image_data.chunk_data = image.data
-        yield image_data
+        image_data.seed = str(image['seed'])
+        image_data.chunk_data = image['data']
+        imagine_response.image_data.append(image_data)
+
+    return imagine_response
 
 
 class StableDiffusion(imagine_service_pb2_grpc.StableDiffusionServiceServicer):
@@ -53,7 +68,9 @@ class StableDiffusion(imagine_service_pb2_grpc.StableDiffusionServiceServicer):
         if generating:
             raise Exception('text-to-image operation is already running')
 
-        args = get_arguments(request)
+        assert hasattr(request, 'data')
+
+        args = map_arguments(request)
 
         generating = True
         try:

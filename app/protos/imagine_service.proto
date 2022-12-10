@@ -1,12 +1,16 @@
 ﻿syntax = "proto3";
 
 service StableDiffusionService {
-  rpc TextToImage(stream ImagineRequest) returns (ImagineResponse) {};
+  rpc TextToImage(ImagineRequest) returns (ImagineResponse) {};
 }
 
 message ImagineRequest {
+  ImagineRequestData data = 1;
+}
+
+message ImagineRequestData {
   string prompt = 1;
-  bool from_file = 2;
+  optional uint32 scale = 2;
   optional uint32 ddim_steps = 3;
   optional uint32 n_iter = 4;
   optional uint32 H = 5;
@@ -17,7 +21,6 @@ message ImagineRequest {
   optional uint32 n_rows = 10;
   optional int64 seed = 11;
   optional bool turbo = 12;
-  optional uint32 scale = 13;
 }
 
 message ImagineResponse {

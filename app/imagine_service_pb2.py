@@ -13,19 +13,21 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15imagine_service.proto\"\xf1\x02\n\x0eImagineRequest\x12\x0e\n\x06prompt\x18\x01 \x01(\t\x12\x11\n\tfrom_file\x18\x02 \x01(\x08\x12\x17\n\nddim_steps\x18\x03 \x01(\rH\x00\x88\x01\x01\x12\x13\n\x06n_iter\x18\x04 \x01(\rH\x01\x88\x01\x01\x12\x0e\n\x01H\x18\x05 \x01(\rH\x02\x88\x01\x01\x12\x0e\n\x01W\x18\x06 \x01(\rH\x03\x88\x01\x01\x12\x0e\n\x01\x43\x18\x07 \x01(\rH\x04\x88\x01\x01\x12\x0e\n\x01\x66\x18\x08 \x01(\rH\x05\x88\x01\x01\x12\x16\n\tn_samples\x18\t \x01(\rH\x06\x88\x01\x01\x12\x13\n\x06n_rows\x18\n \x01(\rH\x07\x88\x01\x01\x12\x11\n\x04seed\x18\x0b \x01(\x03H\x08\x88\x01\x01\x12\x12\n\x05turbo\x18\x0c \x01(\x08H\t\x88\x01\x01\x12\x12\n\x05scale\x18\r \x01(\rH\n\x88\x01\x01\x42\r\n\x0b_ddim_stepsB\t\n\x07_n_iterB\x04\n\x02_HB\x04\n\x02_WB\x04\n\x02_CB\x04\n\x02_fB\x0c\n\n_n_samplesB\t\n\x07_n_rowsB\x07\n\x05_seedB\x08\n\x06_turboB\x08\n\x06_scale\"1\n\x0fImagineResponse\x12\x1e\n\nimage_data\x18\x01 \x03(\x0b\x32\n.ImageData\"-\n\tImageData\x12\x0c\n\x04seed\x18\x01 \x01(\t\x12\x12\n\nchunk_data\x18\x02 \x01(\x0c\x32N\n\x16StableDiffusionService\x12\x34\n\x0bTextToImage\x12\x0f.ImagineRequest\x1a\x10.ImagineResponse\"\x00(\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15imagine_service.proto\"3\n\x0eImagineRequest\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.ImagineRequestData\"\xe2\x02\n\x12ImagineRequestData\x12\x0e\n\x06prompt\x18\x01 \x01(\t\x12\x12\n\x05scale\x18\x02 \x01(\rH\x00\x88\x01\x01\x12\x17\n\nddim_steps\x18\x03 \x01(\rH\x01\x88\x01\x01\x12\x13\n\x06n_iter\x18\x04 \x01(\rH\x02\x88\x01\x01\x12\x0e\n\x01H\x18\x05 \x01(\rH\x03\x88\x01\x01\x12\x0e\n\x01W\x18\x06 \x01(\rH\x04\x88\x01\x01\x12\x0e\n\x01\x43\x18\x07 \x01(\rH\x05\x88\x01\x01\x12\x0e\n\x01\x66\x18\x08 \x01(\rH\x06\x88\x01\x01\x12\x16\n\tn_samples\x18\t \x01(\rH\x07\x88\x01\x01\x12\x13\n\x06n_rows\x18\n \x01(\rH\x08\x88\x01\x01\x12\x11\n\x04seed\x18\x0b \x01(\x03H\t\x88\x01\x01\x12\x12\n\x05turbo\x18\x0c \x01(\x08H\n\x88\x01\x01\x42\x08\n\x06_scaleB\r\n\x0b_ddim_stepsB\t\n\x07_n_iterB\x04\n\x02_HB\x04\n\x02_WB\x04\n\x02_CB\x04\n\x02_fB\x0c\n\n_n_samplesB\t\n\x07_n_rowsB\x07\n\x05_seedB\x08\n\x06_turbo\"1\n\x0fImagineResponse\x12\x1e\n\nimage_data\x18\x01 \x03(\x0b\x32\n.ImageData\"-\n\tImageData\x12\x0c\n\x04seed\x18\x01 \x01(\t\x12\x12\n\nchunk_data\x18\x02 \x01(\x0c\x32L\n\x16StableDiffusionService\x12\x32\n\x0bTextToImage\x12\x0f.ImagineRequest\x1a\x10.ImagineResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'imagine_service_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _IMAGINEREQUEST._serialized_start=26
-  _IMAGINEREQUEST._serialized_end=395
-  _IMAGINERESPONSE._serialized_start=397
-  _IMAGINERESPONSE._serialized_end=446
-  _IMAGEDATA._serialized_start=448
-  _IMAGEDATA._serialized_end=493
-  _STABLEDIFFUSIONSERVICE._serialized_start=495
-  _STABLEDIFFUSIONSERVICE._serialized_end=573
+  _IMAGINEREQUEST._serialized_start=25
+  _IMAGINEREQUEST._serialized_end=76
+  _IMAGINEREQUESTDATA._serialized_start=79
+  _IMAGINEREQUESTDATA._serialized_end=433
+  _IMAGINERESPONSE._serialized_start=435
+  _IMAGINERESPONSE._serialized_end=484
+  _IMAGEDATA._serialized_start=486
+  _IMAGEDATA._serialized_end=531
+  _STABLEDIFFUSIONSERVICE._serialized_start=533
+  _STABLEDIFFUSIONSERVICE._serialized_end=609
 # @@protoc_insertion_point(module_scope)

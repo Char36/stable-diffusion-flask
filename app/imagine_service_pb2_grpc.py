@@ -14,7 +14,7 @@ class StableDiffusionServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.TextToImage = channel.stream_unary(
+        self.TextToImage = channel.unary_unary(
                 '/StableDiffusionService/TextToImage',
                 request_serializer=imagine__service__pb2.ImagineRequest.SerializeToString,
                 response_deserializer=imagine__service__pb2.ImagineResponse.FromString,
@@ -24,7 +24,7 @@ class StableDiffusionServiceStub(object):
 class StableDiffusionServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def TextToImage(self, request_iterator, context):
+    def TextToImage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,7 +33,7 @@ class StableDiffusionServiceServicer(object):
 
 def add_StableDiffusionServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'TextToImage': grpc.stream_unary_rpc_method_handler(
+            'TextToImage': grpc.unary_unary_rpc_method_handler(
                     servicer.TextToImage,
                     request_deserializer=imagine__service__pb2.ImagineRequest.FromString,
                     response_serializer=imagine__service__pb2.ImagineResponse.SerializeToString,
@@ -49,7 +49,7 @@ class StableDiffusionService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def TextToImage(request_iterator,
+    def TextToImage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,7 +59,7 @@ class StableDiffusionService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(request_iterator, target, '/StableDiffusionService/TextToImage',
+        return grpc.experimental.unary_unary(request, target, '/StableDiffusionService/TextToImage',
             imagine__service__pb2.ImagineRequest.SerializeToString,
             imagine__service__pb2.ImagineResponse.FromString,
             options, channel_credentials,

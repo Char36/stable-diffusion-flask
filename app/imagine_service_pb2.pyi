@@ -14,11 +14,16 @@ class ImageData(_message.Message):
     def __init__(self, seed: _Optional[str] = ..., chunk_data: _Optional[bytes] = ...) -> None: ...
 
 class ImagineRequest(_message.Message):
-    __slots__ = ["C", "H", "W", "ddim_steps", "f", "from_file", "n_iter", "n_rows", "n_samples", "prompt", "scale", "seed", "turbo"]
+    __slots__ = ["data"]
+    DATA_FIELD_NUMBER: _ClassVar[int]
+    data: ImagineRequestData
+    def __init__(self, data: _Optional[_Union[ImagineRequestData, _Mapping]] = ...) -> None: ...
+
+class ImagineRequestData(_message.Message):
+    __slots__ = ["C", "H", "W", "ddim_steps", "f", "n_iter", "n_rows", "n_samples", "prompt", "scale", "seed", "turbo"]
     C: int
     C_FIELD_NUMBER: _ClassVar[int]
     DDIM_STEPS_FIELD_NUMBER: _ClassVar[int]
-    FROM_FILE_FIELD_NUMBER: _ClassVar[int]
     F_FIELD_NUMBER: _ClassVar[int]
     H: int
     H_FIELD_NUMBER: _ClassVar[int]
@@ -33,7 +38,6 @@ class ImagineRequest(_message.Message):
     W_FIELD_NUMBER: _ClassVar[int]
     ddim_steps: int
     f: int
-    from_file: bool
     n_iter: int
     n_rows: int
     n_samples: int
@@ -41,7 +45,7 @@ class ImagineRequest(_message.Message):
     scale: int
     seed: int
     turbo: bool
-    def __init__(self, prompt: _Optional[str] = ..., from_file: bool = ..., ddim_steps: _Optional[int] = ..., n_iter: _Optional[int] = ..., H: _Optional[int] = ..., W: _Optional[int] = ..., C: _Optional[int] = ..., f: _Optional[int] = ..., n_samples: _Optional[int] = ..., n_rows: _Optional[int] = ..., seed: _Optional[int] = ..., turbo: bool = ..., scale: _Optional[int] = ...) -> None: ...
+    def __init__(self, prompt: _Optional[str] = ..., scale: _Optional[int] = ..., ddim_steps: _Optional[int] = ..., n_iter: _Optional[int] = ..., H: _Optional[int] = ..., W: _Optional[int] = ..., C: _Optional[int] = ..., f: _Optional[int] = ..., n_samples: _Optional[int] = ..., n_rows: _Optional[int] = ..., seed: _Optional[int] = ..., turbo: bool = ...) -> None: ...
 
 class ImagineResponse(_message.Message):
     __slots__ = ["image_data"]
