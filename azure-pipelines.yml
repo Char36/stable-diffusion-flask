@@ -18,7 +18,7 @@ variables:
   - name: resourceGroupName
     value: 'sd-rg-dev'
   - name: deploy
-    value: $[ne(Build.Reason, 'PullRequest')]
+    value: $[ne(variables['Build.Reason'], 'PullRequest')]
   - group: 'sd-vm-secrets'
 
 jobs:
