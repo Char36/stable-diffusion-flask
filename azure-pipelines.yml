@@ -78,50 +78,54 @@ jobs:
             scriptLocation: 'inlineScript'
             failOnStandardError: true
             inlineScript:  |
-              az group create \
-                --name '${{ variables.resourceGroupName }}' \
-                --location eastus
-    
-              output=$(az deployment group create \
-                --name New-Guid \
-                --resource-group '${{ variables.resourceGroupName }}' \
-                --mode Incremental \
-                --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
-                --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
-                --parameters adminPasswordOrKey=$VM_PASSWORD) | ConvertFrom-Json
+              az group create `
+              --name '${{ variables.resourceGroupName }}' `
+              --location eastus
               
-              echo $output
-    
-              sudo apt-get update
-
-
-    
-              sshCmd=$(echo "$output" | jq -r '.properties.outputs.sshCommand.value')
-              sshUsername=$(echo "$output" | jq -r '.properties.outputs.adminUsername.value')
-              hostName=$(echo "$output" | jq -r '.properties.outputs.hostname.value')
-
-              [[ -z "${sshCmd// }" ]] && echo "##[error] missing ssh command from bicep output" && exit 1;
-
-              sshpass -p "$VM_PASSWORD" ssh -T -o "StrictHostKeyChecking no" "$sshUsername"@"$hostName" "{ yes | mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "'"'"$(command -v systemctl)"'"'" ]; then ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; ./run.sh; fi; }"
+              $output = az deployment group create `
+                --name New-Guid `
+                --resource-group '${{ variables.resourceGroupName }}' `
+                --mode Incremental `
+                --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
+                --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json `
+                --parameters adminPasswordOrKey=$Env:VM_PASSWORD | ConvertFrom-Json;
               
-              if [ !$? ]
-                then
-                  echo "##[error] ssh failed to deployment machine";
-                  echo $output
-                  exit 1;
-              fi
-
-              # echo "##vso[task.setvariable variable=sshCmd;isoutput=true;issecret=true]$sshCmd"
+              echo output
+              
+              Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+              Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
                 
-              #          sudo apt-get install git-all
-              #          git clone https://alexdeane:$GIT_PASSWORD@github.com/Char36/stable-diffusion-flask
-              #          cd ./stable-diffusion-flask/app/
+              Start-Service sshd
+              Set-Service -Name sshd -StartupType 'Automatic'
               
-              #          eval "$(conda shell.bash hook)"
-              #          conda env create -f environment.yaml
-              #          conda activate ldm2
-      
-              # python -m flask run --port=80 --app main
+              # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
+              if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+                Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
+                New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+              }
+              else {
+                Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+              }
+              
+              $sshUsername = $output.adminUsername
+              $hostName = $output.vm_fqdn
+              
+              if (-not($sshUsername)) {
+                echo "##[error] missing sshUsername from bicep output";
+                exit 1;
+              }
+              
+              if (-not($hostName)) {
+                echo "##[error] missing hostName from bicep output";
+                exit 1;
+              }
+              
+              $session = New-PSSession -HostName $hostName -UserName $sshUsername
+              $session
+              Enter-PSSession $session -Credential (New-object PSCredential -ArgumentList @($sshUsername, ($VM_PASSWORD|ConvertTo-secureString -AsPlainText -Force)))
+              Invoke-Command $session -ScriptBlock { 
+                mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.211.1/vsts-agent-linux-x64-2.211.1.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "'"'"$(command -v systemctl)"'"'" ]; then ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --environment --environmentname "'"'"sd-vm-dev"'"'" --acceptteeeula --agent sdserver --url https://dev.azure.com/adeane999/ --work _work --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; ./run.sh; fi;
+              }
 
   - ${{ if eq(variables.deploy, 'true') }}:
     - deployment: vmDeploy
