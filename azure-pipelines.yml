@@ -18,31 +18,31 @@ variables:
   - name: resourceGroupName
     value: 'sd-rg-dev'
   - name: deploy
-    value: $[ne(variables['Build.Reason'], 'PullRequest')]
+    value: $[ ne(variables['Build.Reason'], 'PullRequest') ]
   - group: 'sd-vm-secrets'
 
 jobs:
-  - ${{ if ne(variables.deploy, true) }}:
-    - job: compile
-      displayName: 'compile'
-      workspace:
-        clean: all
-      steps:
-        - checkout: self
+  - job: compile
+    displayName: 'compile'
+    workspace:
+      clean: all
+    steps:
+      - checkout: self
+        clean: true
 
-        - task: PowerShell@2
-          displayName: 'Compile app'
-          inputs: 
-            targetType: 'inline'
-            failOnStderr: true
-            script: |
-              cd .\app\
-              python -m py_compile main.py
+      - task: PowerShell@2
+        displayName: 'Compile app'
+        inputs: 
+          targetType: 'inline'
+          failOnStderr: true
+          script: |
+            cd .\app\
+            python -m py_compile main.py
 
-              Write-Host 'Compiled successfully'
+            Write-Host 'Compiled successfully'
 
 
-  - ${{ if eq(variables.deploy, true) }}:
+  - ${{ if variables.deploy }}:
     - job: infrastructure
       displayName: 'Build artifact and deploy bicep'
       workspace:
@@ -57,7 +57,7 @@ jobs:
             tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
             archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz' 
             replaceExistingArchive: true 
-            verbose: true
+            verbose: false
     
         - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
           artifact: drop
@@ -71,6 +71,7 @@ jobs:
             GIT_PASSWORD: $(gitPassword)
             GIT_PAT: $(gitPat)
             personalAccessToken: $(pat)
+
           inputs:
             scriptType: bash
             azureSubscription: 'c36-sp-dev'
