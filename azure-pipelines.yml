@@ -73,7 +73,7 @@ jobs:
             personalAccessToken: $(pat)
 
           inputs:
-            scriptType: bash
+            scriptType: pwsh
             azureSubscription: 'c36-sp-dev'
             scriptLocation: 'inlineScript'
             failOnStandardError: true
@@ -88,13 +88,13 @@ jobs:
                 --mode Incremental \
                 --template-file $(Build.SourcesDirectory)/bicep/main.bicep \
                 --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json \
-                --parameters adminPasswordOrKey=$VM_PASSWORD)
+                --parameters adminPasswordOrKey=$VM_PASSWORD) | ConvertFrom-Json
               
               echo $output
     
               sudo apt-get update
-              sudo apt-get install sshpass
-              sudo apt-get install jq
+
+
     
               sshCmd=$(echo "$output" | jq -r '.properties.outputs.sshCommand.value')
               sshUsername=$(echo "$output" | jq -r '.properties.outputs.adminUsername.value')
