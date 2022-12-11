@@ -187,23 +187,25 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
-// resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
-//   parent: vm
-//   location: location
-//   name: 'downloadDependencies'
-//   properties: {
-//     source: {
-//       script: '''
-//       '''
-//     }
-//     parameters: [
-//       {
-//         name: 'password'
-//         value: gitPassword
-//       }
-//     ]
-//   }
-// }
+resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
+  parent: vm
+  location: location
+  name: 'downloadDependencies'
+  properties: {
+    source: {
+      script: '''
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https software-properties-common
+        wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+        sudo dpkg -i packages-microsoft-prod.deb
+        sudo apt-get update
+        sudo apt-get install -y powershell
+        pwsh
+      '''
+    }
+    parameters: []
+  }
+}
 
 // curl https://dev.azure.com/adeane999/Stable%20Diffusion/_apis/build/builds/$(Build.BuildId)/artifacts?artifactName=drop&api-version=4.1 --output archive.tar.gz
 
