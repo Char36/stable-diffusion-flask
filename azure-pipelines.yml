@@ -22,7 +22,7 @@ variables:
   - group: 'sd-vm-secrets'
 
 jobs:
-  - ${{ if ne(variables.deploy, 'true') }}:
+  - ${{ if ne(variables.deploy, 'True') }}:
     - job: compile
       displayName: 'compile'
       workspace:
@@ -42,7 +42,7 @@ jobs:
               Write-Host 'Compiled successfully'
 
 
-  - ${{ if eq(variables.deploy, 'true') }}:
+  - ${{ if eq(variables.deploy, 'True') }}:
     - job: infrastructure
       displayName: 'Build artifact and deploy bicep'
       workspace:
