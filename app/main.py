@@ -1,93 +1,96 @@
-import io
-from flask import Flask, request, jsonify, send_file, render_template
+import sys
+from typing import List
+
+from app import imagine_service_pb2_grpc
 from optimizedSD.arguments import Arguments
-from flask_accept import accept
-from os import listdir
-from os.path import isfile, join
 from optimizedSD.optimized_txt2img import StableDiffusionTxt2Img
+from imagine_service_pb2_grpc import imagine__service__pb2
+import logging
+from concurrent import futures
+import grpc
 
 models_path = 'models/ldm/stable-diffusion-v1/'
 model = StableDiffusionTxt2Img()
-app = Flask(__name__)
 
 generating = False
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
-def serve_pil_image(pil_img):
-    """ Stream a PIL.Image result """
-    img_io = io.BytesIO()
-    pil_img.save(img_io, 'PNG', quality=100)
-    img_io.seek(0)
-    return send_file(img_io, mimetype='image/png')
+def map_arguments(request: imagine__service__pb2.ImagineRequest) -> Arguments:
+    arguments = Arguments()
+
+    arguments.prompt = request.data.prompt
+    arguments.ddim_steps = request.data.ddim_steps
+    arguments.n_iter = request.data.n_iter
+    arguments.H = request.data.H
+    arguments.W = request.data.W
+    arguments.C = request.data.C
+    arguments.f = request.data.f
+    arguments.n_samples = request.data.n_samples
+    arguments.n_rows = request.data.n_rows
+    arguments.seed = request.data.seed
+    arguments.turbo = request.data.turbo
+    arguments.scale = request.data.scale
+
+    return arguments
 
 
-def error(message: str):
-    return jsonify({
-        'error': message
-    })
-
-
-@app.route("/", methods=['GET'])
-def index():
-    models = [f for f in listdir(models_path) if isfile(join(models_path, f)) and f.endswith('.ckpt')]
-    return render_template('index.html', models=models)
-
-
-@app.route("/imagine", methods=['POST'])
-@accept('application/json', '*/*')
-def text_to_image():
+def build_response(result) -> imagine__service__pb2.ImagineResponse:
     """
-     Route for generating and returning `n` image results,
-     where `n` :== `args.n_samples`
-
-     Serialized as an array of B64-encoded byte arrays.
     """
 
-    global generating
-    global model
+    imagine_response = imagine__service__pb2.ImagineResponse()
 
-    if generating:
-        return error('text-to-image operation is already running')
+    for image in result:
+        image_data = imagine__service__pb2.ImageData()
+        image_data.seed = str(image['seed'])
+        image_data.chunk_data = image['data']
+        imagine_response.image_data.append(image_data)
 
-    args = Arguments()
-    args.bind_json(request.data)
-
-    generating = True
-    try:
-        result = model.imagine(args, image_format='binary')
-    finally:
-        generating = False
-
-    return jsonify(result)
+    return imagine_response
 
 
-@app.route("/imagine", methods=['POST'])
-@text_to_image.support('image/png')
-def text_to_image_stream():
-    """ Route for streaming a single image result """
+class StableDiffusion(imagine_service_pb2_grpc.StableDiffusionServiceServicer):
 
-    global generating
-    global model
+    def TextToImage(self,
+                    request: imagine__service__pb2.ImagineRequest,
+                    context) -> imagine__service__pb2.ImagineResponse:
+        """
+         Route for generating and returning `n` image results,
+         where `n` :== `args.n_samples`
 
-    if generating:
-        return error('text-to-image operation is already running')
+         Serialized as an array of B64-encoded byte arrays.
+        """
 
-    args = Arguments()
+        global generating
+        global model
 
-    # Force single image when streaming result content
-    args.n_samples = 1
+        if generating:
+            raise Exception('text-to-image operation is already running')
 
-    args.bind_json(request.data)
+        assert hasattr(request, 'data')
 
-    generating = True
-    try:
-        result = model.imagine(args, image_format='png')
-    finally:
-        generating = False
+        args = map_arguments(request)
 
-    first_result = result[0]
+        generating = True
+        try:
+            result = model.imagine(args, image_format='binary')
+        finally:
+            generating = False
 
-    return serve_pil_image(first_result)
+        return build_response(result)
 
 
-app.run()
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    imagine_service_pb2_grpc.add_StableDiffusionServiceServicer_to_server(
+        StableDiffusion(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    print('server started')
+    server.wait_for_termination()
+
+
+if __name__ == '__main__':
+    logging.basicConfig()
+    serve()
