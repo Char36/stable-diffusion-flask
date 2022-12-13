@@ -70,7 +70,7 @@ jobs:
             VM_PASSWORD: $(SdVMPassword)
             GIT_PASSWORD: $(gitPassword)
             GIT_PAT: $(gitPat)
-            personalAccessToken: $(pat)
+            PERSONAL_ACCESS_TOKEN: $(pat)
 
           inputs:
             scriptType: pscore
@@ -88,44 +88,45 @@ jobs:
                 --mode Incremental `
                 --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
                 --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json `
-                --parameters adminPasswordOrKey=$Env:VM_PASSWORD | ConvertFrom-Json;
+                --parameters adminPasswordOrKey=$Env:VM_PASSWORD | ConvertFrom-Json `
+                --parameters adoPersonalAccessToken=$Env:PERSONAL_ACCESS_TOKEN;
               
-              echo output
+              # echo output
               
-              Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
-              Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+              # Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+              # Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
                 
-              Start-Service sshd
-              Set-Service -Name sshd -StartupType 'Automatic'
+              # Start-Service sshd
+              # Set-Service -Name sshd -StartupType 'Automatic'
               
-              # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
-              if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
-                Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
-                New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
-              }
-              else {
-                Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
-              }
+              # # Confirm the Firewall rule is configured. It should be created automatically by setup. Run the following to verify
+              # if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+              #   Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
+              #   New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+              # }
+              # else {
+              #   Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+              # }
               
-              $sshUsername = $output.adminUsername
-              $hostName = $output.vm_fqdn
+              # $sshUsername = $output.adminUsername
+              # $hostName = $output.vm_fqdn
               
-              if (-not($sshUsername)) {
-                echo "##[error] missing sshUsername from bicep output";
-                exit 1;
-              }
+              # if (-not($sshUsername)) {
+              #   echo "##[error] missing sshUsername from bicep output";
+              #   exit 1;
+              # }
               
-              if (-not($hostName)) {
-                echo "##[error] missing hostName from bicep output";
-                exit 1;
-              }
+              # if (-not($hostName)) {
+              #   echo "##[error] missing hostName from bicep output";
+              #   exit 1;
+              # }
               
-              $session = New-PSSession -HostName $hostName -UserName $sshUsername
-              $session
-              Enter-PSSession $session -Credential (New-object PSCredential -ArgumentList @($sshUsername, ($VM_PASSWORD|ConvertTo-secureString -AsPlainText -Force)))
-              Invoke-Command $session -ScriptBlock { 
-                $ErrorActionPreference="Stop";If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] "Administrator")){ throw "Run command in an administrator PowerShell prompt"};If($PSVersionTable.PSVersion -lt (New-Object System.Version("3.0"))){ throw "The minimum version of Windows PowerShell that is required by the script (3.0) does not match the currently running version of Windows PowerShell." };If(-NOT (Test-Path $env:SystemDrive\'azagent')){mkdir $env:SystemDrive\'azagent'}; cd $env:SystemDrive\'azagent'; for($i=1; $i -lt 100; $i++){$destFolder="A"+$i.ToString();if(-NOT (Test-Path ($destFolder))){mkdir $destFolder;cd $destFolder;break;}}; $agentZip="$PWD\agent.zip";$DefaultProxy=[System.Net.WebRequest]::DefaultWebProxy;$securityProtocol=@();$securityProtocol+=[Net.ServicePointManager]::SecurityProtocol;$securityProtocol+=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::SecurityProtocol=$securityProtocol;$WebClient=New-Object Net.WebClient; $Uri='https://vstsagentpackage.azureedge.net/agent/2.213.2/vsts-agent-win-x64-2.213.2.zip';if($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri))){$WebClient.Proxy= New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True);}; $WebClient.DownloadFile($Uri, $agentZip);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD");.\config.cmd --environment --environmentname "sd-vm-dev" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/adeane999/' --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; Remove-Item $agentZip;
-              }
+              # $session = New-PSSession -HostName $hostName -UserName $sshUsername
+              # $session
+              # Enter-PSSession $session -Credential (New-object PSCredential -ArgumentList @($sshUsername, ($VM_PASSWORD|ConvertTo-secureString -AsPlainText -Force)))
+              # Invoke-Command $session -ScriptBlock { 
+              #   $ErrorActionPreference="Stop";If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] "Administrator")){ throw "Run command in an administrator PowerShell prompt"};If($PSVersionTable.PSVersion -lt (New-Object System.Version("3.0"))){ throw "The minimum version of Windows PowerShell that is required by the script (3.0) does not match the currently running version of Windows PowerShell." };If(-NOT (Test-Path $env:SystemDrive\'azagent')){mkdir $env:SystemDrive\'azagent'}; cd $env:SystemDrive\'azagent'; for($i=1; $i -lt 100; $i++){$destFolder="A"+$i.ToString();if(-NOT (Test-Path ($destFolder))){mkdir $destFolder;cd $destFolder;break;}}; $agentZip="$PWD\agent.zip";$DefaultProxy=[System.Net.WebRequest]::DefaultWebProxy;$securityProtocol=@();$securityProtocol+=[Net.ServicePointManager]::SecurityProtocol;$securityProtocol+=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::SecurityProtocol=$securityProtocol;$WebClient=New-Object Net.WebClient; $Uri='https://vstsagentpackage.azureedge.net/agent/2.213.2/vsts-agent-win-x64-2.213.2.zip';if($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri))){$WebClient.Proxy= New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True);}; $WebClient.DownloadFile($Uri, $agentZip);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD");.\config.cmd --environment --environmentname "sd-vm-dev" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/adeane999/' --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; Remove-Item $agentZip;
+              # }
 
   - ${{ if eq(variables.deploy, 'true') }}:
     - deployment: vmDeploy

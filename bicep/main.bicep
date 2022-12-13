@@ -3,6 +3,9 @@
 // @secure()
 // param gitPassword string
 
+@secure()
+param adoPersonalAccessToken string
+
 @description('The name of you Virtual Machine.')
 param vmName string = 'sdserver'
 
@@ -183,6 +186,26 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
       adminUsername: adminUsername
       adminPassword: adminPasswordOrKey
       linuxConfiguration: ((authenticationType == 'password') ? null : linuxConfiguration)
+    }
+  }
+}
+
+resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+  name: 'azure-agent'
+  parent: vm
+  properties: {
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
+    publisher: 'Microsoft.VisualStudio.Services'
+    type: 'TeamServicesAgentLinux'
+    settings: {
+      VSTSAccountUrl: 'https://dev.azure.com/adeane999/'
+      TeamProject: 'Stable Diffusion'
+      DeploymentGroup: 'sd-vm-dev'
+      AgentName: 'sd-vm-dev'
+    }
+    protectedSettings: {
+      PATToken: adoPersonalAccessToken
     }
   }
 }
