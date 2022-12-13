@@ -56,11 +56,11 @@ jobs:
             includeRootFolder: false 
             archiveType: 'tar' # Options: zip, 7z, tar, wim
             tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
-            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz' 
+            archiveFile: '$(Build.ArtifactStagingDirectory)/drop.tar.gz' 
             replaceExistingArchive: true 
             verbose: false
     
-        - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
+        - publish: $(Build.ArtifactStagingDirectory)/drop.tar.gz
           artifact: drop
 
         - task: AzureCLI@2
@@ -132,58 +132,58 @@ jobs:
               #   $ErrorActionPreference="Stop";If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent() ).IsInRole( [Security.Principal.WindowsBuiltInRole] "Administrator")){ throw "Run command in an administrator PowerShell prompt"};If($PSVersionTable.PSVersion -lt (New-Object System.Version("3.0"))){ throw "The minimum version of Windows PowerShell that is required by the script (3.0) does not match the currently running version of Windows PowerShell." };If(-NOT (Test-Path $env:SystemDrive\'azagent')){mkdir $env:SystemDrive\'azagent'}; cd $env:SystemDrive\'azagent'; for($i=1; $i -lt 100; $i++){$destFolder="A"+$i.ToString();if(-NOT (Test-Path ($destFolder))){mkdir $destFolder;cd $destFolder;break;}}; $agentZip="$PWD\agent.zip";$DefaultProxy=[System.Net.WebRequest]::DefaultWebProxy;$securityProtocol=@();$securityProtocol+=[Net.ServicePointManager]::SecurityProtocol;$securityProtocol+=[Net.SecurityProtocolType]::Tls12;[Net.ServicePointManager]::SecurityProtocol=$securityProtocol;$WebClient=New-Object Net.WebClient; $Uri='https://vstsagentpackage.azureedge.net/agent/2.213.2/vsts-agent-win-x64-2.213.2.zip';if($DefaultProxy -and (-not $DefaultProxy.IsBypassed($Uri))){$WebClient.Proxy= New-Object Net.WebProxy($DefaultProxy.GetProxy($Uri).OriginalString, $True);}; $WebClient.DownloadFile($Uri, $agentZip);Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::ExtractToDirectory( $agentZip, "$PWD");.\config.cmd --environment --environmentname "sd-vm-dev" --agent $env:COMPUTERNAME --runasservice --work '_work' --url 'https://dev.azure.com/adeane999/' --projectname 'Stable Diffusion' --auth PAT --token $personalAccessToken; Remove-Item $agentZip;
               # }
 
-  - ${{ if variables.deploy }}:
-    - deployment: vmDeploy
-      displayName: deploy
-      dependsOn: infrastructure
-      # variables:
-      #   sshCmd: $[ dependencies.infrastructure.outputs['bicep.sshCmd'] ]
-      pool:
-        vmImage: 'ubuntu-latest'
-      environment:
-        name: 'sd-vm-dev'
-        resourceType: VirtualMachine
-      strategy:
-        runOnce:
-    #      preDeploy:
-    #        steps:
-    #          - download: current
-    #            artifact: drop
-    #
-    #          - task: PowerShell@2
-    #            displayName: 'Register environment'
-    #            env:
-    #              VM_PASSWORD: $(pat)
-    #            inputs:
-    #              pwsh: true
-    #              targetType: 'filePath'
-    #              filePath: $(Build.SourcesDirectory)/azp/register.ps1
-          deploy:
-            steps:
-              - task: Bash@3
-                inputs:
-                  targetType: 'inline'
-                  script: |
-                    # Modify deployment script based on the app type
-                    echo "Starting deployment script run"
-                    tar -xf drop.tar.gz -C ./artifact
-                    cd ./artifact/app
-                    ls
+  # - ${{ if variables.deploy }}:
+  #   - deployment: vmDeploy
+  #     displayName: deploy
+  #     dependsOn: infrastructure
+  #     # variables:
+  #     #   sshCmd: $[ dependencies.infrastructure.outputs['bicep.sshCmd'] ]
+  #     pool:
+  #       vmImage: 'ubuntu-latest'
+  #     environment:
+  #       name: 'sd-vm-dev'
+  #       resourceType: VirtualMachine
+  #     strategy:
+  #       runOnce:
+  #   #      preDeploy:
+  #   #        steps:
+  #   #          - download: current
+  #   #            artifact: drop
+  #   #
+  #   #          - task: PowerShell@2
+  #   #            displayName: 'Register environment'
+  #   #            env:
+  #   #              VM_PASSWORD: $(pat)
+  #   #            inputs:
+  #   #              pwsh: true
+  #   #              targetType: 'filePath'
+  #   #              filePath: $(Build.SourcesDirectory)/azp/register.ps1
+  #         deploy:
+  #           steps:
+  #             - task: Bash@3
+  #               inputs:
+  #                 targetType: 'inline'
+  #                 script: |
+  #                   # Modify deployment script based on the app type
+  #                   echo "Starting deployment script run"
+  #                   tar -xf drop.tar.gz -C ./artifact
+  #                   cd ./artifact/app
+  #                   ls
 
-                    # if [ -z "$sshCmd" ];
-                    # then
-                    #   echo "##[error] missing ssh command from bicep output"
-                    #   exit 1;
-                    # fi
+  #                   # if [ -z "$sshCmd" ];
+  #                   # then
+  #                   #   echo "##[error] missing ssh command from bicep output"
+  #                   #   exit 1;
+  #                   # fi
 
-                    # sshpass -p "$SdVMPassword" "$sshCmd"
+  #                   # sshpass -p "$SdVMPassword" "$sshCmd"
 
-                    sudo apt-get install libapache2-mod-wsgi-py3  #for python 3
-                    sudo apt-get -y install python3 python3-dev
-                    sudo apt-get -y install nginx
+  #                   sudo apt-get install libapache2-mod-wsgi-py3  #for python 3
+  #                   sudo apt-get -y install python3 python3-dev
+  #                   sudo apt-get -y install nginx
                     
-                    wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
-                    yes no | ./Anaconda3-2022.05-Linux-x86_64.sh
+  #                   wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
+  #                   yes no | ./Anaconda3-2022.05-Linux-x86_64.sh
 
       
       
