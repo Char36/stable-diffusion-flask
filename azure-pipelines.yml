@@ -88,8 +88,8 @@ jobs:
                 --mode Incremental `
                 --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
                 --parameters $(Build.SourcesDirectory)/bicep/environments/development.parameters.json `
-                --parameters adminPasswordOrKey=$Env:VM_PASSWORD | ConvertFrom-Json `
-                --parameters adoPersonalAccessToken=$Env:PERSONAL_ACCESS_TOKEN;
+                --parameters adminPasswordOrKey=$Env:VM_PASSWORD `
+                --parameters adoPersonalAccessToken=$Env:PERSONAL_ACCESS_TOKEN | ConvertFrom-Json;
               
               # echo output
               
