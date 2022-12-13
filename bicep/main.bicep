@@ -193,6 +193,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: 'azure-agent'
   parent: vm
+  location: location
   properties: {
     autoUpgradeMinorVersion: true
     enableAutomaticUpgrade: true
