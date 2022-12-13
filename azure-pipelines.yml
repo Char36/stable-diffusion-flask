@@ -81,9 +81,11 @@ jobs:
               az group create `
               --name '${{ variables.resourceGroupName }}' `
               --location eastus
+
+              $deploymentName = New-Guid;
               
               $output = az deployment group create `
-                --name New-Guid `
+                --name $deploymentName `
                 --resource-group '${{ variables.resourceGroupName }}' `
                 --mode Incremental `
                 --template-file $(Build.SourcesDirectory)/bicep/main.bicep `
