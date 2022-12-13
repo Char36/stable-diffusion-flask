@@ -213,9 +213,9 @@ resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = 
     type: 'TeamServicesAgentLinux'
     typeHandlerVersion: '1.0'
     settings: {
-      VSTSAccountUrl: 'https://dev.azure.com/adeane999/'
+      VSTSAccountUrl: 'https://dev.azure.com/adeane999'
       TeamProject: 'Stable Diffusion'
-      DeploymentGroup: 'sd-vm-dev'
+      DeploymentGroup: 'Stable Diffusion-sd-vm-dev'
       AgentName: 'sd-vm-dev'
       VSTSAccountName: 'adeane999'
     }
