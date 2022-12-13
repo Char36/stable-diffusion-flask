@@ -73,7 +73,7 @@ jobs:
             personalAccessToken: $(pat)
 
           inputs:
-            scriptType: pwsh
+            scriptType: pscore
             azureSubscription: 'c36-sp-dev'
             scriptLocation: 'inlineScript'
             failOnStandardError: true
