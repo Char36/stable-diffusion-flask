@@ -209,7 +209,6 @@ resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = 
   location: location
   properties: {
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
     publisher: 'Microsoft.VisualStudio.Services'
     type: 'TeamServicesAgentLinux'
     typeHandlerVersion: '1.0'
