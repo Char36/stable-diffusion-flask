@@ -112,7 +112,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
         }
       }
       {
-        name: 'SSH'
+        name: 'SSH_Out'
         properties: {
           priority: 1000
           protocol: 'Tcp'
