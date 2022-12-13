@@ -71,6 +71,7 @@ jobs:
             GIT_PASSWORD: $(gitPassword)
             GIT_PAT: $(gitPat)
             PERSONAL_ACCESS_TOKEN: $(pat)
+            DEPLOYMENT_NAME: $(Build.BuildNumber)
 
           inputs:
             scriptType: pscore

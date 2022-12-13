@@ -212,6 +212,7 @@ resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = 
     enableAutomaticUpgrade: true
     publisher: 'Microsoft.VisualStudio.Services'
     type: 'TeamServicesAgentLinux'
+    typeHandlerVersion: '1.0'
     settings: {
       VSTSAccountUrl: 'https://dev.azure.com/adeane999/'
       TeamProject: 'Stable Diffusion'
