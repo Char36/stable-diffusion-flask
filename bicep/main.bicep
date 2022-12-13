@@ -217,6 +217,7 @@ resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = 
       TeamProject: 'Stable Diffusion'
       DeploymentGroup: 'sd-vm-dev'
       AgentName: 'sd-vm-dev'
+      VSTSAccountName: 'adeane999'
     }
     protectedSettings: {
       PATToken: adoPersonalAccessToken
