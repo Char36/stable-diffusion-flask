@@ -137,6 +137,19 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
           destinationPortRange: '50051'
         }
       }
+      {
+        name: 'GRPC_OUT'
+        properties: {
+          priority: 1001
+          protocol: '*'
+          access: 'Allow'
+          direction: 'Outbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '50051'
+        }
+      }
     ]
   }
 }
