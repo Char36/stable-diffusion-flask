@@ -3,6 +3,9 @@
 // @secure()
 // param gitPassword string
 
+@secure()
+param adoPersonalAccessToken string
+
 @description('The name of you Virtual Machine.')
 param vmName string = 'sdserver'
 
@@ -108,6 +111,19 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
           destinationPortRange: '22'
         }
       }
+      {
+        name: 'SSH_Out'
+        properties: {
+          priority: 1000
+          protocol: 'Tcp'
+          access: 'Allow'
+          direction: 'Outbound'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '22'
+        }
+      }
     ]
   }
 }
@@ -187,6 +203,28 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
   }
 }
 
+resource azureAgent 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+  name: 'azure-agent'
+  parent: vm
+  location: location
+  properties: {
+    autoUpgradeMinorVersion: true
+    publisher: 'Microsoft.VisualStudio.Services'
+    type: 'TeamServicesAgentLinux'
+    typeHandlerVersion: '1.0'
+    settings: {
+      VSTSAccountUrl: 'https://dev.azure.com/adeane999'
+      TeamProject: 'Stable Diffusion'
+      DeploymentGroup: 'sd-vm-dev'
+      AgentName: 'sd-vm-dev'
+      VSTSAccountName: 'adeane999'
+    }
+    protectedSettings: {
+      PATToken: adoPersonalAccessToken
+    }
+  }
+}
+
 // resource runCmd 'Microsoft.Compute/virtualMachines/runCommands@2022-08-01' = {
 //   parent: vm
 //   location: location
@@ -194,19 +232,29 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 //   properties: {
 //     source: {
 //       script: '''
+//         sudo apt-get update
+//         sudo apt-get install -y wget apt-transport-https software-properties-common
+
+//         wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+
+//         sudo dpkg -i packages-microsoft-prod.deb
+//         sudo apt-get update
+//         sudo apt-get install -y powershell
+
+//         sudo apt install openssh-server
+
+//         cd /etc/ssh
+//         sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' sshd_config
+
+//         Subsystem powershell /usr/bin/pwsh -sshs -nologo
+//         sudo systemctl restart sshd.service
 //       '''
 //     }
-//     parameters: [
-//       {
-//         name: 'password'
-//         value: gitPassword
-//       }
-//     ]
+//     parameters: []
 //   }
 // }
 
 // curl https://dev.azure.com/adeane999/Stable%20Diffusion/_apis/build/builds/$(Build.BuildId)/artifacts?artifactName=drop&api-version=4.1 --output archive.tar.gz
 
 output adminUsername string = adminUsername
-output hostname string = publicIP.properties.dnsSettings.fqdn
-output sshCommand string = 'ssh -o "StrictHostKeyChecking no" ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
+output vm_fqdn string = publicIP.properties.dnsSettings.fqdn
