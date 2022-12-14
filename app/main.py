@@ -1,5 +1,4 @@
 import sys
-from typing import List
 
 from app import imagine_service_pb2_grpc
 from optimizedSD.arguments import Arguments
@@ -16,7 +15,7 @@ generating = False
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
-def map_arguments(request: imagine__service__pb2.ImagineRequest) -> Arguments:
+def map_arguments(request):
     arguments = Arguments()
 
     arguments.prompt = request.data.prompt
@@ -35,7 +34,7 @@ def map_arguments(request: imagine__service__pb2.ImagineRequest) -> Arguments:
     return arguments
 
 
-def build_response(result) -> imagine__service__pb2.ImagineResponse:
+def build_response(result):
     """
     """
 
@@ -53,8 +52,8 @@ def build_response(result) -> imagine__service__pb2.ImagineResponse:
 class StableDiffusion(imagine_service_pb2_grpc.StableDiffusionServiceServicer):
 
     def TextToImage(self,
-                    request: imagine__service__pb2.ImagineRequest,
-                    context) -> imagine__service__pb2.ImagineResponse:
+                    request,
+                    context):
         """
          Route for generating and returning `n` image results,
          where `n` :== `args.n_samples`
