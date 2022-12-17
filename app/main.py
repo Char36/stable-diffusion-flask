@@ -1,12 +1,12 @@
 import sys
 
-from app import imagine_service_pb2_grpc
+import imagine_service_pb2_grpc
+import logging
+import grpc
 from optimizedSD.arguments import Arguments
 from optimizedSD.optimized_txt2img import StableDiffusionTxt2Img
 from imagine_service_pb2_grpc import imagine__service__pb2
-import logging
 from concurrent import futures
-import grpc
 
 models_path = 'models/ldm/stable-diffusion-v1/'
 model = StableDiffusionTxt2Img()
